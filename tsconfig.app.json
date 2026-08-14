@@ -1,0 +1,29 @@
+{
+	"compilerOptions": {
+		"composite": true,
+		"target": "ES2022",
+		"lib": ["ES2022", "DOM", "DOM.Iterable"],
+		"module": "ESNext",
+		"moduleResolution": "Bundler",
+		"jsx": "react-jsx",
+		"strict": true,
+		"noUncheckedIndexedAccess": true,
+		"useDefineForClassFields": true,
+		"allowImportingTsExtensions": true,
+		"verbatimModuleSyntax": true,
+		"moduleDetection": "force",
+		"noEmit": true,
+		"skipLibCheck": true,
+		"esModuleInterop": true,
+		"resolveJsonModule": true,
+		"isolatedModules": true,
+		"types": ["vite/client"],
+		// Paraglide emits plain JS annotated with JSDoc; allowJs lets TS infer
+		// real message signatures from it instead of falling back to `any`.
+		"allowJs": true,
+		"checkJs": false,
+		"baseUrl": ".",
+		"paths": { "@/*": ["./src/*"] }
+	},
+	"include": ["src"]
+}

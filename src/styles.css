@@ -1,0 +1,125 @@
+@import "tailwindcss";
+@import "tw-animate-css";
+
+/*
+ * KStacks Dashboard theme.
+ *
+ * Dark-only by product decision (no light/dark toggle in v1). Values are the
+ * official KStack brand-deck palette: Primary #15BB81, Secondary-1 (light
+ * reflected green) #8ADDC0, Secondary-2 (dark reflected green) #1A6F52,
+ * and the three neutrals Black #0B0B0B / Grey #434242 / White #FFFFFF.
+ * Everything else here is interpolated between those neutrals per the
+ * kstacks-frontend-identity skill's "Dark mode surfaces" guidance.
+ */
+:root {
+  --radius: 0.625rem;
+
+  --background: #0b0b0b;
+  --foreground: #ffffff;
+
+  --card: #151616;
+  --card-foreground: #ffffff;
+
+  --popover: #17181a;
+  --popover-foreground: #ffffff;
+
+  --primary: #15bb81;
+  --primary-foreground: #05130d;
+
+  --secondary: #1e1f1f;
+  --secondary-foreground: #ffffff;
+
+  --muted: #1a1b1b;
+  --muted-foreground: #9a9a9a;
+
+  --accent: #1a6f52;
+  --accent-foreground: #ffffff;
+
+  --destructive: #e5484d;
+  --destructive-foreground: #ffffff;
+
+  --border: #ffffff1f;
+  --input: #1c1d1d;
+  --ring: #15bb81;
+
+  --chart-1: #15bb81;
+  --chart-2: #8addc0;
+  --chart-3: #1a6f52;
+  --chart-4: #4fd8a6;
+  --chart-5: #0d3322;
+
+  --sidebar: #101110;
+  --sidebar-foreground: #ffffff;
+  --sidebar-primary: #15bb81;
+  --sidebar-primary-foreground: #05130d;
+  --sidebar-accent: #1a6f52;
+  --sidebar-accent-foreground: #ffffff;
+  --sidebar-border: #ffffff1f;
+  --sidebar-ring: #15bb81;
+
+  --font-sans: "Alexandria", ui-sans-serif, system-ui, sans-serif;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --color-card: var(--card);
+  --color-card-foreground: var(--card-foreground);
+  --color-popover: var(--popover);
+  --color-popover-foreground: var(--popover-foreground);
+  --color-primary: var(--primary);
+  --color-primary-foreground: var(--primary-foreground);
+  --color-secondary: var(--secondary);
+  --color-secondary-foreground: var(--secondary-foreground);
+  --color-muted: var(--muted);
+  --color-muted-foreground: var(--muted-foreground);
+  --color-accent: var(--accent);
+  --color-accent-foreground: var(--accent-foreground);
+  --color-destructive: var(--destructive);
+  --color-destructive-foreground: var(--destructive-foreground);
+  --color-border: var(--border);
+  --color-input: var(--input);
+  --color-ring: var(--ring);
+  --color-chart-1: var(--chart-1);
+  --color-chart-2: var(--chart-2);
+  --color-chart-3: var(--chart-3);
+  --color-chart-4: var(--chart-4);
+  --color-chart-5: var(--chart-5);
+  --color-sidebar: var(--sidebar);
+  --color-sidebar-foreground: var(--sidebar-foreground);
+  --color-sidebar-primary: var(--sidebar-primary);
+  --color-sidebar-primary-foreground: var(--sidebar-primary-foreground);
+  --color-sidebar-accent: var(--sidebar-accent);
+  --color-sidebar-accent-foreground: var(--sidebar-accent-foreground);
+  --color-sidebar-border: var(--sidebar-border);
+  --color-sidebar-ring: var(--sidebar-ring);
+
+  --radius-sm: calc(var(--radius) - 4px);
+  --radius-md: calc(var(--radius) - 2px);
+  --radius-lg: var(--radius);
+  --radius-xl: calc(var(--radius) + 4px);
+
+  --font-sans: var(--font-sans);
+}
+
+@keyframes kstack-pulse {
+  0%,
+  100% {
+    opacity: 0.35;
+  }
+  50% {
+    opacity: 1;
+  }
+}
+
+@layer base {
+  * {
+    @apply border-border outline-ring/50;
+  }
+  html {
+    color-scheme: dark;
+  }
+  body {
+    @apply bg-background text-foreground font-sans antialiased;
+  }
+}
