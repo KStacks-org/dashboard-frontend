@@ -36,24 +36,53 @@ test.describe("new sections and task workflow", () => {
     await expect(page.locator("article", { hasText: unique })).toBeVisible();
   });
 
-  test("expands a task to reveal its subtasks inline", async ({ page }) => {
+  test("expands a task to read its subtasks, links and comments without any compose fields", async ({
+    page,
+  }) => {
     const title = `مهمة شجرية ${Date.now()}`;
     await page.getByRole("textbox", { name: /Add a task and press Enter/ }).fill(title);
     await page.keyboard.press("Enter");
 
     const card = page.locator("article", { hasText: title });
-    await card.getByRole("heading", { name: title }).click();
 
+    // A task with nothing attached has nothing to expand.
+    await expect(card.getByRole("button", { name: "Show details" })).toHaveCount(0);
+
+    // Everything is added through the dialog.
+    await card.getByRole("heading", { name: title }).click();
     const dialog = page.getByRole("dialog");
+
     await dialog.getByPlaceholder("Add a subtask...").fill("خطوة فرعية");
     await dialog.getByRole("button", { name: "Add", exact: true }).click();
     await expect(dialog.getByText("0 of 1 done")).toBeVisible();
-    await page.keyboard.press("Escape");
 
-    // Collapsed by default, revealed by the chevron.
+    await dialog.getByRole("textbox", { name: "https://..." }).fill("https://kstacks.org");
+    await dialog.getByRole("textbox", { name: /Label/ }).fill("الموقع");
+    await dialog.getByRole("button", { name: "Add link" }).click();
+    await expect(dialog.getByRole("link", { name: "الموقع" })).toBeVisible();
+
+    await dialog.getByRole("textbox", { name: "Write an update..." }).fill("تعليق للقراءة");
+    await dialog.getByRole("button", { name: "Comment" }).click();
+    await expect(dialog.getByText("تعليق للقراءة")).toBeVisible();
+
+    await dialog.getByRole("button", { name: "Close" }).click();
+    await expect(dialog).toBeHidden();
+
+    // Collapsed by default; the chevron reveals all three, read-only.
     await expect(card.getByText("خطوة فرعية")).toHaveCount(0);
-    await card.getByRole("button", { name: "Show subtasks" }).click();
+    await card.getByRole("button", { name: "Show details" }).click();
+
     await expect(card.getByText("خطوة فرعية")).toBeVisible();
+    await expect(card.getByRole("link", { name: "الموقع" })).toBeVisible();
+    await expect(card.getByText("تعليق للقراءة")).toBeVisible();
+
+    // Reading mode carries no compose fields — those stay in the dialog.
+    await expect(card.getByPlaceholder("Add a subtask...")).toHaveCount(0);
+    await expect(card.getByRole("textbox", { name: "https://..." })).toHaveCount(0);
+    await expect(card.getByRole("textbox", { name: "Write an update..." })).toHaveCount(0);
+
+    await card.getByRole("button", { name: "Hide details" }).click();
+    await expect(card.getByText("خطوة فرعية")).toHaveCount(0);
   });
 
   test("assigns a subtask and blocks removing that person from the parent task", async ({

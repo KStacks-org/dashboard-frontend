@@ -178,5 +178,9 @@
   "action_save": "حفظ",
   "action_cancel": "إلغاء",
   "action_delete": "حذف",
-  "health_pending": "بانتظار أول فحص"
+  "health_pending": "بانتظار أول فحص",
+  "details_expand": "عرض التفاصيل",
+  "details_collapse": "إخفاء التفاصيل",
+  "comments_more": "و{count} تعليق آخر",
+  "comments_view_all": "افتح المهمة للرد"
 }

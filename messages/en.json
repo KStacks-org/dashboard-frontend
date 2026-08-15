@@ -178,5 +178,9 @@
   "action_save": "Save",
   "action_cancel": "Cancel",
   "action_delete": "Delete",
-  "health_pending": "Awaiting first check"
+  "health_pending": "Awaiting first check",
+  "details_expand": "Show details",
+  "details_collapse": "Hide details",
+  "comments_more": "and {count} more",
+  "comments_view_all": "Open the task to reply"
 }

@@ -14,10 +14,10 @@ import {
 import { useState } from "react";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
 import { StatusBadge } from "@/components/tasks/status-badge";
+import { hasExpandableDetails, TaskDetailPanel } from "@/components/tasks/task-detail-panel";
 import { TaskReference } from "@/components/tasks/task-reference";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import { Checkbox } from "@/components/ui/checkbox";
 import {
   DropdownMenu,
   DropdownMenuContent,
@@ -25,7 +25,6 @@ import {
   DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
-import { useToggleSubtask } from "@/hooks/use-tasks";
 import { formatDateTime, isOverdue } from "@/lib/format";
 import type { Task } from "@/lib/types";
 import { m } from "@/paraglide/messages";
@@ -48,25 +47,26 @@ export function TaskCard({
   onDelete: () => void;
 }) {
   // Collapsed by default so a long list stays scannable; the chevron reveals
-  // the parent → subtask hierarchy in place.
+  // everything attached to the task — subtasks, links and comments — for
+  // reading, while adding to any of them stays in the detail dialog.
   const [expanded, setExpanded] = useState(false);
-  const toggleSubtask = useToggleSubtask();
 
   const overdue = !task.isArchived && isOverdue(task.deadline);
   const completedSubtasks = task.subtasks.filter((s) => s.isCompleted).length;
   const hasSubtasks = task.subtasks.length > 0;
+  const expandable = hasExpandableDetails(task);
 
   return (
     <article className="group rounded-xl border border-border bg-card transition-colors hover:border-primary/40">
       <div className="flex items-start gap-2 p-4 sm:p-5">
-        {hasSubtasks ? (
+        {expandable ? (
           <Button
             variant="ghost"
             size="icon-xs"
             className="mt-0.5 shrink-0 text-muted-foreground"
             onClick={() => setExpanded((open) => !open)}
             aria-expanded={expanded}
-            aria-label={expanded ? m.subtasks_collapse() : m.subtasks_expand()}
+            aria-label={expanded ? m.details_collapse() : m.details_expand()}
           >
             <ChevronRightIcon
               className={`transition-transform rtl:-scale-x-100 ${
@@ -215,38 +215,7 @@ export function TaskCard({
         </div>
       </div>
 
-      {expanded && hasSubtasks && (
-        <ul className="space-y-0.5 border-t border-border/60 py-2 ps-12 pe-4 sm:pe-5">
-          {task.subtasks.map((subtask) => (
-            <li key={subtask.id} className="flex items-center gap-2.5 py-1">
-              <Checkbox
-                id={`card-subtask-${subtask.id}`}
-                checked={subtask.isCompleted}
-                onCheckedChange={(checked) =>
-                  toggleSubtask.mutate({ id: subtask.id, isCompleted: checked === true })
-                }
-              />
-              <label
-                htmlFor={`card-subtask-${subtask.id}`}
-                dir="auto"
-                className={`min-w-0 flex-1 cursor-pointer truncate text-sm ${
-                  subtask.isCompleted ? "text-muted-foreground line-through" : ""
-                }`}
-              >
-                {subtask.title}
-              </label>
-              {subtask.assignee && (
-                <span
-                  dir="auto"
-                  className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
-                >
-                  {subtask.assignee.displayName}
-                </span>
-              )}
-            </li>
-          ))}
-        </ul>
-      )}
+      {expanded && <TaskDetailPanel task={task} />}
     </article>
   );
 }
