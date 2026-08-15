@@ -1,6 +1,10 @@
 import { CalendarIcon, LayersIcon, UserIcon } from "lucide-react";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
+import { StatusBadge } from "@/components/tasks/status-badge";
 import { SubtaskList } from "@/components/tasks/subtask-list";
+import { TaskComments } from "@/components/tasks/task-comments";
+import { TaskLinks } from "@/components/tasks/task-links";
+import { TaskReference } from "@/components/tasks/task-reference";
 import { Badge } from "@/components/ui/badge";
 import {
   Dialog,
@@ -18,22 +22,28 @@ export function TaskDetailDialog({
   task,
   open,
   onOpenChange,
+  currentUserId,
 }: {
   task: Task | null;
   open: boolean;
   onOpenChange: (open: boolean) => void;
+  currentUserId: string;
 }) {
   if (!task) return null;
 
   const overdue = !task.isArchived && isOverdue(task.deadline);
+  const taskAssignees = task.assignees.map((a) => a.user);
 
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
-      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-lg">
+      <DialogContent className="max-h-[calc(100dvh-2rem)] overflow-y-auto sm:max-w-xl">
         <DialogHeader>
-          <DialogTitle dir="auto" className="break-words">
-            {task.title}
-          </DialogTitle>
+          <div className="flex flex-wrap items-center gap-2">
+            <TaskReference reference={task.reference} />
+            <DialogTitle dir="auto" className="break-words">
+              {task.title}
+            </DialogTitle>
+          </div>
           <DialogDescription className="sr-only">{m.task_view_details()}</DialogDescription>
         </DialogHeader>
 
@@ -45,6 +55,7 @@ export function TaskDetailDialog({
           )}
 
           <div className="flex flex-wrap gap-1.5">
+            {!task.isArchived && <StatusBadge status={task.status} />}
             <PriorityBadge priority={task.priority} />
             <Badge variant="outline" className="text-muted-foreground">
               <LayersIcon className="size-3" aria-hidden="true" />
@@ -71,11 +82,11 @@ export function TaskDetailDialog({
             </Badge>
           </div>
 
-          {task.assignees.length > 0 && (
+          {taskAssignees.length > 0 && (
             <div className="space-y-1.5">
               <h3 className="text-sm font-semibold">{m.task_assigned_to()}</h3>
               <ul className="flex flex-wrap gap-1.5">
-                {task.assignees.map(({ user }) => (
+                {taskAssignees.map((user) => (
                   <li
                     key={user.id}
                     dir="auto"
@@ -89,8 +100,13 @@ export function TaskDetailDialog({
           )}
 
           <Separator />
+          <SubtaskList taskId={task.id} subtasks={task.subtasks} taskAssignees={taskAssignees} />
 
-          <SubtaskList taskId={task.id} subtasks={task.subtasks} />
+          <Separator />
+          <TaskLinks taskId={task.id} links={task.links} />
+
+          <Separator />
+          <TaskComments taskId={task.id} comments={task.comments} currentUserId={currentUserId} />
         </div>
       </DialogContent>
     </Dialog>

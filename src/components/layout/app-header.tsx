@@ -12,6 +12,14 @@ import { m } from "@/paraglide/messages";
 const navLinkClass =
   "rounded-md px-3 py-1.5 text-sm font-medium text-muted-foreground transition-colors hover:text-foreground data-[status=active]:bg-primary/10 data-[status=active]:text-primary";
 
+const NAV_LINKS = [
+  { to: "/tasks", label: () => m.nav_tasks() },
+  { to: "/services", label: () => m.nav_services() },
+  { to: "/health", label: () => m.nav_health() },
+  { to: "/projects", label: () => m.nav_projects() },
+  { to: "/archive", label: () => m.nav_archive() },
+] as const;
+
 export function AppHeader({ user }: { user: CurrentUser }) {
   const logout = useLogout();
   const [mobileOpen, setMobileOpen] = useState(false);
@@ -26,18 +34,17 @@ export function AppHeader({ user }: { user: CurrentUser }) {
           <Link to="/tasks" className="shrink-0" aria-label={m.app_title()}>
             <KStackLogo />
           </Link>
-          <nav className="hidden items-center gap-1 md:flex">
-            <Link to="/tasks" className={navLinkClass}>
-              {m.nav_tasks()}
-            </Link>
-            <Link to="/archive" className={navLinkClass}>
-              {m.nav_archive()}
-            </Link>
+          <nav className="hidden items-center gap-0.5 lg:flex">
+            {NAV_LINKS.map((link) => (
+              <Link key={link.to} to={link.to} className={navLinkClass}>
+                {link.label()}
+              </Link>
+            ))}
           </nav>
         </div>
 
         <div className="flex items-center gap-2">
-          <div className="hidden items-center gap-2 md:flex">
+          <div className="hidden items-center gap-2 lg:flex">
             <LanguageToggle />
             <Avatar className="size-8">
               <AvatarFallback className="bg-primary/15 text-xs font-semibold text-primary">
@@ -61,7 +68,7 @@ export function AppHeader({ user }: { user: CurrentUser }) {
           <Button
             variant="ghost"
             size="icon-sm"
-            className="md:hidden"
+            className="lg:hidden"
             onClick={() => setMobileOpen((open) => !open)}
             aria-expanded={mobileOpen}
             aria-controls={mobileNavId}
@@ -73,14 +80,18 @@ export function AppHeader({ user }: { user: CurrentUser }) {
       </div>
 
       {mobileOpen && (
-        <div id={mobileNavId} className="border-t border-border px-4 py-3 md:hidden">
+        <div id={mobileNavId} className="border-t border-border px-4 py-3 lg:hidden">
           <nav className="flex flex-col gap-1">
-            <Link to="/tasks" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              {m.nav_tasks()}
-            </Link>
-            <Link to="/archive" className={navLinkClass} onClick={() => setMobileOpen(false)}>
-              {m.nav_archive()}
-            </Link>
+            {NAV_LINKS.map((link) => (
+              <Link
+                key={link.to}
+                to={link.to}
+                className={navLinkClass}
+                onClick={() => setMobileOpen(false)}
+              >
+                {link.label()}
+              </Link>
+            ))}
           </nav>
           <div className="mt-3 flex items-center justify-between border-t border-border pt-3">
             <span dir="auto" className="truncate text-sm font-medium">

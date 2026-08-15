@@ -99,14 +99,11 @@ test.describe("task management", () => {
     const title = `مهمة بمهام فرعية ${Date.now()}`;
     await createSimpleTask(page, title);
 
-    await page
-      .locator("article", { hasText: title })
-      .getByRole("button", { name: title, exact: true })
-      .click();
+    await page.locator("article", { hasText: title }).getByRole("heading", { name: title }).click();
     const dialog = page.getByRole("dialog");
 
     await dialog.getByPlaceholder("Add a subtask...").fill("الخطوة الأولى");
-    await dialog.getByRole("button", { name: "Add" }).click();
+    await dialog.getByRole("button", { name: "Add", exact: true }).click();
 
     const checkbox = dialog.getByRole("checkbox");
     await expect(checkbox).toBeVisible();
@@ -122,10 +119,7 @@ test.describe("task management", () => {
 
     // Persists across a reload.
     await page.reload();
-    await page
-      .locator("article", { hasText: title })
-      .getByRole("button", { name: title, exact: true })
-      .click();
+    await page.locator("article", { hasText: title }).getByRole("heading", { name: title }).click();
     await expect(page.getByRole("dialog").getByText("الخطوة الأولى")).toBeVisible();
 
     await page

@@ -35,9 +35,12 @@ function weekdayLabels(locale: string): string[] {
 export function TaskCalendar({
   tasks,
   onSelectTask,
+  emptyHint,
 }: {
   tasks: Task[];
   onSelectTask: (task: Task) => void;
+  /** Shown instead of the default copy when filters are hiding everything. */
+  emptyHint?: string;
 }) {
   const [month, setMonth] = useState(() => startOfMonth(new Date()));
   const locale = currentLocale() === "ar" ? "ar-SA-u-nu-latn-ca-gregory" : "en-GB";
@@ -104,7 +107,7 @@ export function TaskCalendar({
         <EmptyState
           icon={CalendarXIcon}
           title={m.empty_calendar_body()}
-          body={m.empty_tasks_body()}
+          body={emptyHint ?? m.empty_tasks_body()}
         />
       )}
 

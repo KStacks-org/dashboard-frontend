@@ -74,6 +74,7 @@ function ArchivePage() {
         task={detailTask}
         open={detailTaskId !== null}
         onOpenChange={(open) => !open && setDetailTaskId(null)}
+        currentUserId={user.id}
       />
 
       {deletingTaskId && (

@@ -14,7 +14,11 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppArchiveRouteImport } from './routes/_app.archive'
+import { Route as AppHealthRouteImport } from './routes/_app.health'
+import { Route as AppProjectsRouteImport } from './routes/_app.projects'
 import { Route as AppTasksRouteImport } from './routes/_app.tasks'
+import { Route as AppServicesIndexRouteImport } from './routes/_app.services.index'
+import { Route as AppServicesCodenameRouteImport } from './routes/_app.services.$codename'
 
 const IndexRoute = IndexRouteImport.update({
   id: '/',
@@ -40,9 +44,29 @@ const AppArchiveRoute = AppArchiveRouteImport.update({
   path: '/archive',
   getParentRoute: () => AppRoute,
 } as any)
+const AppHealthRoute = AppHealthRouteImport.update({
+  id: '/health',
+  path: '/health',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppProjectsRoute = AppProjectsRouteImport.update({
+  id: '/projects',
+  path: '/projects',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServicesIndexRoute = AppServicesIndexRouteImport.update({
+  id: '/services/',
+  path: '/services/',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppServicesCodenameRoute = AppServicesCodenameRouteImport.update({
+  id: '/services/$codename',
+  path: '/services/$codename',
   getParentRoute: () => AppRoute,
 } as any)
 
@@ -51,14 +75,22 @@ export interface FileRoutesByFullPath {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/archive': typeof AppArchiveRoute
+  '/health': typeof AppHealthRoute
+  '/projects': typeof AppProjectsRoute
   '/tasks': typeof AppTasksRoute
+  '/services/$codename': typeof AppServicesCodenameRoute
+  '/services/': typeof AppServicesIndexRoute
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/archive': typeof AppArchiveRoute
+  '/health': typeof AppHealthRoute
+  '/projects': typeof AppProjectsRoute
   '/tasks': typeof AppTasksRoute
+  '/services/$codename': typeof AppServicesCodenameRoute
+  '/services': typeof AppServicesIndexRoute
 }
 export interface FileRoutesById {
   __root__: typeof rootRouteImport
@@ -67,13 +99,35 @@ export interface FileRoutesById {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/_app/archive': typeof AppArchiveRoute
+  '/_app/health': typeof AppHealthRoute
+  '/_app/projects': typeof AppProjectsRoute
   '/_app/tasks': typeof AppTasksRoute
+  '/_app/services/$codename': typeof AppServicesCodenameRoute
+  '/_app/services/': typeof AppServicesIndexRoute
 }
 export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
-  fullPaths: '/' | '/change-password' | '/login' | '/archive' | '/tasks'
+  fullPaths:
+    | '/'
+    | '/change-password'
+    | '/login'
+    | '/archive'
+    | '/health'
+    | '/projects'
+    | '/tasks'
+    | '/services/$codename'
+    | '/services/'
   fileRoutesByTo: FileRoutesByTo
-  to: '/' | '/change-password' | '/login' | '/archive' | '/tasks'
+  to:
+    | '/'
+    | '/change-password'
+    | '/login'
+    | '/archive'
+    | '/health'
+    | '/projects'
+    | '/tasks'
+    | '/services/$codename'
+    | '/services'
   id:
     | '__root__'
     | '/'
@@ -81,7 +135,11 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/login'
     | '/_app/archive'
+    | '/_app/health'
+    | '/_app/projects'
     | '/_app/tasks'
+    | '/_app/services/$codename'
+    | '/_app/services/'
   fileRoutesById: FileRoutesById
 }
 export interface RootRouteChildren {
@@ -128,6 +186,20 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArchiveRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/health': {
+      id: '/_app/health'
+      path: '/health'
+      fullPath: '/health'
+      preLoaderRoute: typeof AppHealthRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/projects': {
+      id: '/_app/projects'
+      path: '/projects'
+      fullPath: '/projects'
+      preLoaderRoute: typeof AppProjectsRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/tasks': {
       id: '/_app/tasks'
       path: '/tasks'
@@ -135,17 +207,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppTasksRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/services/': {
+      id: '/_app/services/'
+      path: '/services'
+      fullPath: '/services/'
+      preLoaderRoute: typeof AppServicesIndexRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/services/$codename': {
+      id: '/_app/services/$codename'
+      path: '/services/$codename'
+      fullPath: '/services/$codename'
+      preLoaderRoute: typeof AppServicesCodenameRouteImport
+      parentRoute: typeof AppRoute
+    }
   }
 }
 
 interface AppRouteChildren {
   AppArchiveRoute: typeof AppArchiveRoute
+  AppHealthRoute: typeof AppHealthRoute
+  AppProjectsRoute: typeof AppProjectsRoute
   AppTasksRoute: typeof AppTasksRoute
+  AppServicesCodenameRoute: typeof AppServicesCodenameRoute
+  AppServicesIndexRoute: typeof AppServicesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppArchiveRoute: AppArchiveRoute,
+  AppHealthRoute: AppHealthRoute,
+  AppProjectsRoute: AppProjectsRoute,
   AppTasksRoute: AppTasksRoute,
+  AppServicesCodenameRoute: AppServicesCodenameRoute,
+  AppServicesIndexRoute: AppServicesIndexRoute,
 }
 
 const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
