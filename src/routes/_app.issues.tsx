@@ -3,7 +3,6 @@ import { createFileRoute } from "@tanstack/react-router";
 import {
   ArrowRightIcon,
   BugIcon,
-  LayersIcon,
   MoreVerticalIcon,
   PencilIcon,
   PlusIcon,
@@ -17,6 +16,7 @@ import {
   IssueFormDialog,
   issueStatusLabel,
 } from "@/components/issues/issue-form-dialog";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
@@ -228,7 +228,7 @@ function IssuesPage() {
 
                 {issue.service && (
                   <Badge variant="outline" className="text-muted-foreground">
-                    <LayersIcon className="size-3" aria-hidden="true" />
+                    <ServiceLogo codename={issue.service.codename} className="size-3.5" />
                     {issue.service.name}
                   </Badge>
                 )}

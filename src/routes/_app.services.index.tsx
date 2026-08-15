@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ChevronRightIcon, LayersIcon, ListTodoIcon, UserIcon } from "lucide-react";
 import { StackingLoader } from "@/components/brand/stacking-loader";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { HealthBadge, ServiceStatusBadge } from "@/components/services/service-status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -44,9 +45,14 @@ function ServicesPage() {
               className="group rounded-xl border border-border bg-card p-5 transition-colors hover:border-primary/40 focus-visible:ring-[3px] focus-visible:ring-ring/50 focus-visible:outline-none"
             >
               <div className="flex items-start justify-between gap-2">
-                <div className="min-w-0">
-                  <h2 className="font-semibold group-hover:text-primary">{service.name}</h2>
-                  <p className="mt-0.5 text-xs text-primary">{service.tagline}</p>
+                <div className="flex min-w-0 items-start gap-3">
+                  <span className="flex size-10 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 p-1.5">
+                    <ServiceLogo codename={service.codename} className="size-full" />
+                  </span>
+                  <div className="min-w-0">
+                    <h2 className="font-semibold group-hover:text-primary">{service.name}</h2>
+                    <p className="mt-0.5 text-xs text-primary">{service.tagline}</p>
+                  </div>
                 </div>
                 <ChevronRightIcon
                   className="mt-0.5 size-4 shrink-0 text-muted-foreground rtl:-scale-x-100"

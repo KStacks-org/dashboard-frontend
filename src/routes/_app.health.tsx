@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { ActivityIcon, ExternalLinkIcon, Loader2Icon, RefreshCwIcon } from "lucide-react";
 import { StackingLoader } from "@/components/brand/stacking-loader";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { HealthBadge } from "@/components/services/service-status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -53,30 +54,35 @@ function HealthRow({ service }: { service: ServiceHealth }) {
   return (
     <article className="rounded-xl border border-border bg-card p-4 sm:p-5">
       <div className="flex flex-wrap items-start justify-between gap-3">
-        <div className="min-w-0">
-          <Link
-            to="/services/$codename"
-            params={{ codename: service.codename }}
-            className="font-semibold hover:text-primary"
-          >
-            {service.name}
-          </Link>
-          <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
-            <HealthBadge latest={service.latest} monitored={monitored} />
-            {uptimePercent !== null && monitored && (
-              <span dir="auto">{m.health_uptime({ percent: uptimePercent })}</span>
-            )}
-            {service.latest && (
-              <span dir="auto">
-                {m.health_last_checked({ time: formatDateTime(service.latest.checkedAt) })}
-              </span>
-            )}
-            {service.latest?.responseTimeMs !== null &&
-              service.latest?.responseTimeMs !== undefined && (
-                <span dir="ltr">
-                  {m.health_response_time({ ms: service.latest.responseTimeMs })}
+        <div className="flex min-w-0 items-start gap-3">
+          <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 p-1.5">
+            <ServiceLogo codename={service.codename} className="size-full" />
+          </span>
+          <div className="min-w-0">
+            <Link
+              to="/services/$codename"
+              params={{ codename: service.codename }}
+              className="font-semibold hover:text-primary"
+            >
+              {service.name}
+            </Link>
+            <div className="mt-1.5 flex flex-wrap items-center gap-2 text-xs text-muted-foreground">
+              <HealthBadge latest={service.latest} monitored={monitored} />
+              {uptimePercent !== null && monitored && (
+                <span dir="auto">{m.health_uptime({ percent: uptimePercent })}</span>
+              )}
+              {service.latest && (
+                <span dir="auto">
+                  {m.health_last_checked({ time: formatDateTime(service.latest.checkedAt) })}
                 </span>
               )}
+              {service.latest?.responseTimeMs !== null &&
+                service.latest?.responseTimeMs !== undefined && (
+                  <span dir="ltr">
+                    {m.health_response_time({ ms: service.latest.responseTimeMs })}
+                  </span>
+                )}
+            </div>
           </div>
         </div>
 

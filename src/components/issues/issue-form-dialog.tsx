@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { Loader2Icon } from "lucide-react";
 import { useId, useState } from "react";
 import { toast } from "sonner";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -204,7 +205,10 @@ function IssueFormBody({
                 <SelectItem value={NONE}>{m.task_no_service()}</SelectItem>
                 {services.map((service) => (
                   <SelectItem key={service.id} value={service.id}>
-                    {service.name}
+                    <span className="flex items-center gap-2">
+                      <ServiceLogo codename={service.codename} className="size-4" />
+                      {service.name}
+                    </span>
                   </SelectItem>
                 ))}
               </SelectContent>

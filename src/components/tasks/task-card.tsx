@@ -4,7 +4,6 @@ import {
   CheckCircle2Icon,
   ChevronRightIcon,
   FlagIcon,
-  LayersIcon,
   LinkIcon,
   ListChecksIcon,
   MessageSquareIcon,
@@ -13,6 +12,7 @@ import {
   Trash2Icon,
 } from "lucide-react";
 import { useState } from "react";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
 import { StatusBadge } from "@/components/tasks/status-badge";
 import { hasExpandableDetails, TaskDetailPanel } from "@/components/tasks/task-detail-panel";
@@ -154,7 +154,7 @@ export function TaskCard({
 
             {task.service && (
               <Badge variant="outline" className="text-muted-foreground">
-                <LayersIcon className="size-3" aria-hidden="true" />
+                <ServiceLogo codename={task.service.codename} className="size-3.5" />
                 {task.service.name}
               </Badge>
             )}

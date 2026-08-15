@@ -1,4 +1,5 @@
 import { CalendarIcon, LayersIcon, UserIcon } from "lucide-react";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
 import { StatusBadge } from "@/components/tasks/status-badge";
 import { SubtaskList } from "@/components/tasks/subtask-list";
@@ -58,7 +59,11 @@ export function TaskDetailDialog({
             {!task.isArchived && <StatusBadge status={task.status} />}
             <PriorityBadge priority={task.priority} />
             <Badge variant="outline" className="text-muted-foreground">
-              <LayersIcon className="size-3" aria-hidden="true" />
+              {task.service ? (
+                <ServiceLogo codename={task.service.codename} className="size-3.5" />
+              ) : (
+                <LayersIcon className="size-3" aria-hidden="true" />
+              )}
               {task.service?.name ?? m.task_no_service()}
             </Badge>
             <Badge

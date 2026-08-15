@@ -11,6 +11,7 @@ import {
 import { useId, useState } from "react";
 import { toast } from "sonner";
 import { StackingLoader } from "@/components/brand/stacking-loader";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { HealthBadge, ServiceStatusBadge } from "@/components/services/service-status-badge";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
@@ -66,12 +67,17 @@ function ServiceDetailPage() {
         <>
           <header className="space-y-3">
             <div className="flex flex-wrap items-start justify-between gap-3">
-              <div>
-                <h1 className="text-2xl font-semibold tracking-tight">{service.name}</h1>
-                <p className="mt-1 text-sm text-primary">{service.tagline}</p>
-                <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
-                  {service.description}
-                </p>
+              <div className="flex items-start gap-4">
+                <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-card p-2.5">
+                  <ServiceLogo codename={service.codename} className="size-full" />
+                </span>
+                <div>
+                  <h1 className="text-2xl font-semibold tracking-tight">{service.name}</h1>
+                  <p className="mt-1 text-sm text-primary">{service.tagline}</p>
+                  <p className="mt-2 max-w-2xl text-sm text-muted-foreground">
+                    {service.description}
+                  </p>
+                </div>
               </div>
 
               <div className="flex flex-wrap items-center gap-2">
