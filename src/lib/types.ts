@@ -7,6 +7,7 @@ export type CurrentUser = {
   id: string;
   email: string;
   displayName: string;
+  role: UserRole;
   mustChangePassword: boolean;
   createdAt: string;
   updatedAt: string;
@@ -112,6 +113,7 @@ export type Task = {
   createdById: string;
   createdBy: TeamMember;
   assignees: Array<{ userId: string; user: TeamMember }>;
+  milestoneId: string | null;
   subtasks: Subtask[];
   comments: TaskComment[];
   links: TaskLink[];
@@ -130,4 +132,152 @@ export type SponsoredProject = {
   notes: string | null;
   createdAt: string;
   updatedAt: string;
+};
+
+export type UserRole = "ADMIN" | "MEMBER";
+export type IssueStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
+export type NotificationType =
+  | "TASK_ASSIGNED"
+  | "SUBTASK_ASSIGNED"
+  | "COMMENT_MENTION"
+  | "ISSUE_ASSIGNED"
+  | "DEADLINE_SOON";
+
+export type TeamMemberProfile = {
+  id: string;
+  email: string;
+  displayName: string;
+  role: UserRole;
+  jobTitle: string | null;
+  responsibilities: string[];
+  isActive: boolean;
+  mustChangePassword: boolean;
+  createdAt: string;
+  workload: {
+    activeTasks: number;
+    completedTasks: number;
+    todo: number;
+    inProgress: number;
+    blocked: number;
+    openIssues: number;
+  };
+};
+
+export type Issue = {
+  id: string;
+  reference: number;
+  title: string;
+  description: string | null;
+  priority: Priority;
+  status: IssueStatus;
+  serviceId: string | null;
+  service: { id: string; name: string; codename: string } | null;
+  assigneeId: string | null;
+  assignee: TeamMember | null;
+  reportedById: string;
+  reportedBy: TeamMember;
+  convertedTaskId: string | null;
+  convertedTask: { id: string; reference: number; title: string } | null;
+  createdAt: string;
+  updatedAt: string;
+};
+
+export type MilestoneProgress = {
+  totalTasks: number;
+  completedTasks: number;
+  percent: number | null;
+};
+
+export type Milestone = {
+  id: string;
+  title: string;
+  description: string | null;
+  deadline: string | null;
+  sortOrder: number;
+  createdAt: string;
+  updatedAt: string;
+  progress: MilestoneProgress;
+};
+
+export type MilestoneDetail = Milestone & {
+  tasks: Array<Task & { assignees: Array<{ user: { id: string; displayName: string } }> }>;
+};
+
+export type AppNotification = {
+  id: string;
+  type: NotificationType;
+  body: string;
+  isRead: boolean;
+  createdAt: string;
+  actor: { id: string; displayName: string } | null;
+  task: { id: string; reference: number; title: string } | null;
+  issue: { id: string; reference: number; title: string } | null;
+};
+
+export type OverviewData = {
+  stats: {
+    activeTasks: number;
+    completedThisWeek: number;
+    openIssues: number;
+    servicesUp: number;
+    servicesMonitored: number;
+    servicesTotal: number;
+    overdueTasks: number;
+    dueSoonTasks: number;
+  };
+  myTasks: Array<Task & { subtaskTotal: number; subtaskCompleted: number }>;
+  milestones: Array<{
+    id: string;
+    title: string;
+    deadline: string | null;
+    totalTasks: number;
+    completedTasks: number;
+  }>;
+};
+
+export type GitHubActivity = {
+  org: string;
+  fetchedAt: string;
+  authenticated: boolean;
+  rateLimited: boolean;
+  repositories: Array<{
+    name: string;
+    description: string | null;
+    url: string;
+    defaultBranch: string;
+    language: string | null;
+    openIssues: number;
+    pushedAt: string | null;
+  }>;
+  commits: Array<{
+    sha: string;
+    message: string;
+    author: string;
+    avatarUrl: string | null;
+    repo: string;
+    url: string;
+    committedAt: string;
+  }>;
+  pullRequests: Array<{
+    number: number;
+    title: string;
+    author: string;
+    avatarUrl: string | null;
+    repo: string;
+    url: string;
+    state: string;
+    isDraft: boolean;
+    updatedAt: string;
+  }>;
+  issues: Array<{
+    number: number;
+    title: string;
+    author: string;
+    avatarUrl: string | null;
+    repo: string;
+    url: string;
+    state: string;
+    updatedAt: string;
+  }>;
+  branches: Array<{ repo: string; name: string; url: string; isDefault: boolean }>;
 };

@@ -16,7 +16,7 @@ export const Route = createFileRoute("/change-password")({
     const user = await context.queryClient.fetchQuery(currentUserQuery).catch(() => null);
     if (!user) throw redirect({ to: "/login" });
     // Users who already rotated their password have no business here.
-    if (!user.mustChangePassword) throw redirect({ to: "/tasks" });
+    if (!user.mustChangePassword) throw redirect({ to: "/overview" });
   },
   component: ChangePasswordPage,
 });
@@ -52,7 +52,7 @@ function ChangePasswordPage() {
       .catch(() => null);
     if (!user) return;
     toast.success(m.change_password_success());
-    await navigate({ to: "/tasks" });
+    await navigate({ to: "/overview" });
   };
 
   return (

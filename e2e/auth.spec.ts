@@ -28,8 +28,8 @@ test.describe("authentication", () => {
 
   test("signs in an activated account and lands on the dashboard", async ({ page }) => {
     await login(page, E2E_USERS.rotated.email);
-    await expect(page).toHaveURL(/\/tasks/);
-    await expect(page.getByRole("heading", { name: "Tasks", exact: true })).toBeVisible();
+    await expect(page).toHaveURL(/\/overview/);
+    await expect(page.getByRole("heading", { name: "Overview", exact: true })).toBeVisible();
     await expect(page.getByText(E2E_USERS.rotated.displayName)).toBeVisible();
   });
 
@@ -49,7 +49,7 @@ test.describe("authentication", () => {
     await page.getByLabel("Confirm new password").fill(newPassword);
     await page.getByRole("button", { name: "Update password" }).click();
 
-    await expect(page).toHaveURL(/\/tasks/);
+    await expect(page).toHaveURL(/\/overview/);
 
     // Log out, then confirm the old temporary password is dead and the new one works.
     await page.getByRole("button", { name: "Log out" }).click();
@@ -59,12 +59,12 @@ test.describe("authentication", () => {
     await expect(page.getByRole("alert")).toHaveText("Invalid email or password");
 
     await login(page, E2E_USERS.fresh.email, newPassword);
-    await expect(page).toHaveURL(/\/tasks/);
+    await expect(page).toHaveURL(/\/overview/);
   });
 
   test("logging out invalidates the session", async ({ page }) => {
     await login(page, E2E_USERS.rotated.email);
-    await expect(page).toHaveURL(/\/tasks/);
+    await expect(page).toHaveURL(/\/overview/);
 
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login/);

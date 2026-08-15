@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, escapeForRegex, loginAsRotatedUser } from "./helpers";
+import { E2E_USERS, escapeForRegex, loginAndOpenTasks } from "./helpers";
 
 /** Deterministic deadline inside the current month, so the calendar assertion is stable. */
 function deadlineThisMonth() {
@@ -15,7 +15,7 @@ function deadlineThisMonth() {
 
 test.describe("task management", () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsRotatedUser(page);
+    await loginAndOpenTasks(page);
   });
 
   test("creates a task with every field, then shows it in both list and calendar views", async ({
@@ -194,7 +194,8 @@ test.describe("task management", () => {
     await otherPage.getByLabel("University email").fill(E2E_USERS.other.email);
     await otherPage.getByLabel("Password", { exact: true }).fill("123456");
     await otherPage.getByRole("button", { name: "Log in" }).click();
-    await otherPage.waitForURL("**/tasks");
+    await otherPage.waitForURL("**/overview");
+    await otherPage.goto("/tasks");
 
     const card = otherPage.locator("article", { hasText: title });
     await expect(card).toBeVisible();

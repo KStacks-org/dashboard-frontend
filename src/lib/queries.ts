@@ -1,13 +1,20 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/api";
 import type {
+  AppNotification,
   CurrentUser,
+  GitHubActivity,
+  Issue,
+  Milestone,
+  MilestoneDetail,
+  OverviewData,
   ServiceDetail,
   ServiceHealth,
   ServiceListItem,
   SponsoredProject,
   Task,
   TeamMember,
+  TeamMemberProfile,
 } from "@/lib/types";
 
 export const currentUserQuery = queryOptions({
@@ -57,4 +64,46 @@ export const sponsoredProjectsQuery = queryOptions({
   queryKey: ["sponsoredProjects"],
   queryFn: () =>
     apiRequest<{ projects: SponsoredProject[] }>("/sponsored-projects").then((r) => r.projects),
+});
+
+export const overviewQuery = queryOptions({
+  queryKey: ["overview"],
+  queryFn: () => apiRequest<OverviewData>("/overview"),
+  staleTime: 30_000,
+});
+
+export const teamQuery = queryOptions({
+  queryKey: ["team"],
+  queryFn: () => apiRequest<{ members: TeamMemberProfile[] }>("/team").then((r) => r.members),
+});
+
+export const issuesQuery = queryOptions({
+  queryKey: ["issues"],
+  queryFn: () => apiRequest<{ issues: Issue[] }>("/issues").then((r) => r.issues),
+});
+
+export const milestonesQuery = queryOptions({
+  queryKey: ["milestones"],
+  queryFn: () => apiRequest<{ milestones: Milestone[] }>("/milestones").then((r) => r.milestones),
+});
+
+export function milestoneQuery(id: string) {
+  return queryOptions({
+    queryKey: ["milestones", id],
+    queryFn: () =>
+      apiRequest<{ milestone: MilestoneDetail }>(`/milestones/${id}`).then((r) => r.milestone),
+  });
+}
+
+export const notificationsQuery = queryOptions({
+  queryKey: ["notifications"],
+  queryFn: () => apiRequest<{ notifications: AppNotification[]; unread: number }>("/notifications"),
+});
+
+export const githubActivityQuery = queryOptions({
+  queryKey: ["githubActivity"],
+  queryFn: () =>
+    apiRequest<{ activity: GitHubActivity }>("/github/activity").then((r) => r.activity),
+  // The server caches for 20 minutes; there is nothing to gain from asking sooner.
+  staleTime: 10 * 60_000,
 });

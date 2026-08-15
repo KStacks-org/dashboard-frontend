@@ -14,9 +14,14 @@ import { Route as AppRouteImport } from './routes/_app'
 import { Route as ChangePasswordRouteImport } from './routes/change-password'
 import { Route as LoginRouteImport } from './routes/login'
 import { Route as AppArchiveRouteImport } from './routes/_app.archive'
+import { Route as AppGithubRouteImport } from './routes/_app.github'
 import { Route as AppHealthRouteImport } from './routes/_app.health'
+import { Route as AppIssuesRouteImport } from './routes/_app.issues'
+import { Route as AppMilestonesRouteImport } from './routes/_app.milestones'
+import { Route as AppOverviewRouteImport } from './routes/_app.overview'
 import { Route as AppProjectsRouteImport } from './routes/_app.projects'
 import { Route as AppTasksRouteImport } from './routes/_app.tasks'
+import { Route as AppTeamRouteImport } from './routes/_app.team'
 import { Route as AppServicesIndexRouteImport } from './routes/_app.services.index'
 import { Route as AppServicesCodenameRouteImport } from './routes/_app.services.$codename'
 
@@ -44,9 +49,29 @@ const AppArchiveRoute = AppArchiveRouteImport.update({
   path: '/archive',
   getParentRoute: () => AppRoute,
 } as any)
+const AppGithubRoute = AppGithubRouteImport.update({
+  id: '/github',
+  path: '/github',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppHealthRoute = AppHealthRouteImport.update({
   id: '/health',
   path: '/health',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppIssuesRoute = AppIssuesRouteImport.update({
+  id: '/issues',
+  path: '/issues',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppMilestonesRoute = AppMilestonesRouteImport.update({
+  id: '/milestones',
+  path: '/milestones',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppOverviewRoute = AppOverviewRouteImport.update({
+  id: '/overview',
+  path: '/overview',
   getParentRoute: () => AppRoute,
 } as any)
 const AppProjectsRoute = AppProjectsRouteImport.update({
@@ -57,6 +82,11 @@ const AppProjectsRoute = AppProjectsRouteImport.update({
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
+  getParentRoute: () => AppRoute,
+} as any)
+const AppTeamRoute = AppTeamRouteImport.update({
+  id: '/team',
+  path: '/team',
   getParentRoute: () => AppRoute,
 } as any)
 const AppServicesIndexRoute = AppServicesIndexRouteImport.update({
@@ -75,9 +105,14 @@ export interface FileRoutesByFullPath {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/archive': typeof AppArchiveRoute
+  '/github': typeof AppGithubRoute
   '/health': typeof AppHealthRoute
+  '/issues': typeof AppIssuesRoute
+  '/milestones': typeof AppMilestonesRoute
+  '/overview': typeof AppOverviewRoute
   '/projects': typeof AppProjectsRoute
   '/tasks': typeof AppTasksRoute
+  '/team': typeof AppTeamRoute
   '/services/$codename': typeof AppServicesCodenameRoute
   '/services/': typeof AppServicesIndexRoute
 }
@@ -86,9 +121,14 @@ export interface FileRoutesByTo {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/archive': typeof AppArchiveRoute
+  '/github': typeof AppGithubRoute
   '/health': typeof AppHealthRoute
+  '/issues': typeof AppIssuesRoute
+  '/milestones': typeof AppMilestonesRoute
+  '/overview': typeof AppOverviewRoute
   '/projects': typeof AppProjectsRoute
   '/tasks': typeof AppTasksRoute
+  '/team': typeof AppTeamRoute
   '/services/$codename': typeof AppServicesCodenameRoute
   '/services': typeof AppServicesIndexRoute
 }
@@ -99,9 +139,14 @@ export interface FileRoutesById {
   '/change-password': typeof ChangePasswordRoute
   '/login': typeof LoginRoute
   '/_app/archive': typeof AppArchiveRoute
+  '/_app/github': typeof AppGithubRoute
   '/_app/health': typeof AppHealthRoute
+  '/_app/issues': typeof AppIssuesRoute
+  '/_app/milestones': typeof AppMilestonesRoute
+  '/_app/overview': typeof AppOverviewRoute
   '/_app/projects': typeof AppProjectsRoute
   '/_app/tasks': typeof AppTasksRoute
+  '/_app/team': typeof AppTeamRoute
   '/_app/services/$codename': typeof AppServicesCodenameRoute
   '/_app/services/': typeof AppServicesIndexRoute
 }
@@ -112,9 +157,14 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/login'
     | '/archive'
+    | '/github'
     | '/health'
+    | '/issues'
+    | '/milestones'
+    | '/overview'
     | '/projects'
     | '/tasks'
+    | '/team'
     | '/services/$codename'
     | '/services/'
   fileRoutesByTo: FileRoutesByTo
@@ -123,9 +173,14 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/login'
     | '/archive'
+    | '/github'
     | '/health'
+    | '/issues'
+    | '/milestones'
+    | '/overview'
     | '/projects'
     | '/tasks'
+    | '/team'
     | '/services/$codename'
     | '/services'
   id:
@@ -135,9 +190,14 @@ export interface FileRouteTypes {
     | '/change-password'
     | '/login'
     | '/_app/archive'
+    | '/_app/github'
     | '/_app/health'
+    | '/_app/issues'
+    | '/_app/milestones'
+    | '/_app/overview'
     | '/_app/projects'
     | '/_app/tasks'
+    | '/_app/team'
     | '/_app/services/$codename'
     | '/_app/services/'
   fileRoutesById: FileRoutesById
@@ -186,11 +246,39 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppArchiveRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/github': {
+      id: '/_app/github'
+      path: '/github'
+      fullPath: '/github'
+      preLoaderRoute: typeof AppGithubRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/health': {
       id: '/_app/health'
       path: '/health'
       fullPath: '/health'
       preLoaderRoute: typeof AppHealthRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/issues': {
+      id: '/_app/issues'
+      path: '/issues'
+      fullPath: '/issues'
+      preLoaderRoute: typeof AppIssuesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/milestones': {
+      id: '/_app/milestones'
+      path: '/milestones'
+      fullPath: '/milestones'
+      preLoaderRoute: typeof AppMilestonesRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/overview': {
+      id: '/_app/overview'
+      path: '/overview'
+      fullPath: '/overview'
+      preLoaderRoute: typeof AppOverviewRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/projects': {
@@ -205,6 +293,13 @@ declare module '@tanstack/react-router' {
       path: '/tasks'
       fullPath: '/tasks'
       preLoaderRoute: typeof AppTasksRouteImport
+      parentRoute: typeof AppRoute
+    }
+    '/_app/team': {
+      id: '/_app/team'
+      path: '/team'
+      fullPath: '/team'
+      preLoaderRoute: typeof AppTeamRouteImport
       parentRoute: typeof AppRoute
     }
     '/_app/services/': {
@@ -226,18 +321,28 @@ declare module '@tanstack/react-router' {
 
 interface AppRouteChildren {
   AppArchiveRoute: typeof AppArchiveRoute
+  AppGithubRoute: typeof AppGithubRoute
   AppHealthRoute: typeof AppHealthRoute
+  AppIssuesRoute: typeof AppIssuesRoute
+  AppMilestonesRoute: typeof AppMilestonesRoute
+  AppOverviewRoute: typeof AppOverviewRoute
   AppProjectsRoute: typeof AppProjectsRoute
   AppTasksRoute: typeof AppTasksRoute
+  AppTeamRoute: typeof AppTeamRoute
   AppServicesCodenameRoute: typeof AppServicesCodenameRoute
   AppServicesIndexRoute: typeof AppServicesIndexRoute
 }
 
 const AppRouteChildren: AppRouteChildren = {
   AppArchiveRoute: AppArchiveRoute,
+  AppGithubRoute: AppGithubRoute,
   AppHealthRoute: AppHealthRoute,
+  AppIssuesRoute: AppIssuesRoute,
+  AppMilestonesRoute: AppMilestonesRoute,
+  AppOverviewRoute: AppOverviewRoute,
   AppProjectsRoute: AppProjectsRoute,
   AppTasksRoute: AppTasksRoute,
+  AppTeamRoute: AppTeamRoute,
   AppServicesCodenameRoute: AppServicesCodenameRoute,
   AppServicesIndexRoute: AppServicesIndexRoute,
 }

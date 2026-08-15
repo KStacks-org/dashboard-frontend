@@ -1,5 +1,10 @@
 const API_BASE = import.meta.env.VITE_API_BASE_URL ?? "";
 
+/** Absolute URL for an API path — needed by EventSource, which takes no options. */
+export function apiUrl(path: string): string {
+  return `${API_BASE}/api${path}`;
+}
+
 export class ApiError extends Error {
   readonly status: number;
   readonly code: string;

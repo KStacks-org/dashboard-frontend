@@ -21,6 +21,13 @@ export async function login(page: Page, email: string, password = E2E_PASSWORD) 
 
 export async function loginAsRotatedUser(page: Page) {
   await login(page, E2E_USERS.rotated.email);
+  await page.waitForURL("**/overview");
+}
+
+/** Signing in lands on the overview, so task specs navigate on from there. */
+export async function loginAndOpenTasks(page: Page) {
+  await loginAsRotatedUser(page);
+  await page.goto("/tasks");
   await page.waitForURL("**/tasks");
 }
 

@@ -17,7 +17,7 @@ export const Route = createFileRoute("/login")({
     const user = await context.queryClient.fetchQuery(currentUserQuery).catch(() => null);
     if (user) {
       throw redirect({
-        to: user.mustChangePassword ? "/change-password" : "/tasks",
+        to: user.mustChangePassword ? "/change-password" : "/overview",
       });
     }
   },
@@ -50,7 +50,7 @@ function LoginPage() {
     const user = await login.mutateAsync({ email, password }).catch(() => null);
     if (!user) return;
     await navigate({
-      to: user.mustChangePassword ? "/change-password" : "/tasks",
+      to: user.mustChangePassword ? "/change-password" : "/overview",
     });
   };
 

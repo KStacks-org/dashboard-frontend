@@ -1,9 +1,9 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, escapeForRegex, loginAsRotatedUser } from "./helpers";
+import { E2E_USERS, escapeForRegex, loginAndOpenTasks } from "./helpers";
 
 test.describe("new sections and task workflow", () => {
   test.beforeEach(async ({ page }) => {
-    await loginAsRotatedUser(page);
+    await loginAndOpenTasks(page);
   });
 
   test("quick-add creates a task assigned to me, and 'My tasks' keeps it visible", async ({

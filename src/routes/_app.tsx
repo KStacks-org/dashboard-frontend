@@ -1,5 +1,6 @@
 import { createFileRoute, Outlet, redirect } from "@tanstack/react-router";
 import { AppHeader } from "@/components/layout/app-header";
+import { useNotificationStream } from "@/hooks/use-notification-stream";
 import { currentUserQuery } from "@/lib/queries";
 
 export const Route = createFileRoute("/_app")({
@@ -15,6 +16,8 @@ export const Route = createFileRoute("/_app")({
 
 function AppLayout() {
   const { user } = Route.useRouteContext();
+  // One EventSource for the whole authenticated session.
+  useNotificationStream();
 
   return (
     <div className="flex min-h-dvh flex-col">
