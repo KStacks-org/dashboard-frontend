@@ -3,6 +3,7 @@ import {
   CalendarIcon,
   CheckCircle2Icon,
   ChevronRightIcon,
+  FlagIcon,
   LayersIcon,
   LinkIcon,
   ListChecksIcon,
@@ -155,6 +156,13 @@ export function TaskCard({
               <Badge variant="outline" className="text-muted-foreground">
                 <LayersIcon className="size-3" aria-hidden="true" />
                 {task.service.name}
+              </Badge>
+            )}
+
+            {task.milestone && (
+              <Badge variant="outline" className="text-muted-foreground">
+                <FlagIcon className="size-3" aria-hidden="true" />
+                <span dir="auto">{task.milestone.title}</span>
               </Badge>
             )}
 

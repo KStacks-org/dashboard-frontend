@@ -11,7 +11,7 @@ import {
 } from "@/components/ui/select";
 import { Toggle } from "@/components/ui/toggle";
 import { isOverdue } from "@/lib/format";
-import { servicesQuery, teamMembersQuery } from "@/lib/queries";
+import { milestonesQuery, servicesQuery, teamMembersQuery } from "@/lib/queries";
 import type { Task } from "@/lib/types";
 import { m } from "@/paraglide/messages";
 
@@ -20,6 +20,7 @@ export const ALL = "__all__";
 export type TaskFilters = {
   search: string;
   serviceId: string;
+  milestoneId: string;
   priority: string;
   status: string;
   assigneeId: string;
@@ -30,6 +31,7 @@ export type TaskFilters = {
 export const EMPTY_FILTERS: TaskFilters = {
   search: "",
   serviceId: ALL,
+  milestoneId: ALL,
   priority: ALL,
   status: ALL,
   assigneeId: ALL,
@@ -41,6 +43,7 @@ export function hasActiveFilters(filters: TaskFilters): boolean {
   return (
     filters.search.trim() !== "" ||
     filters.serviceId !== ALL ||
+    filters.milestoneId !== ALL ||
     filters.priority !== ALL ||
     filters.status !== ALL ||
     filters.assigneeId !== ALL ||
@@ -63,6 +66,7 @@ export function filterTasks(tasks: Task[], filters: TaskFilters, currentUserId: 
         task.description ?? "",
         `ks-${task.reference}`,
         task.service?.name ?? "",
+        task.milestone?.title ?? "",
         ...task.assignees.map((a) => a.user.displayName),
       ]
         .join(" ")
@@ -71,6 +75,7 @@ export function filterTasks(tasks: Task[], filters: TaskFilters, currentUserId: 
     }
 
     if (filters.serviceId !== ALL && task.serviceId !== filters.serviceId) return false;
+    if (filters.milestoneId !== ALL && task.milestoneId !== filters.milestoneId) return false;
     if (filters.priority !== ALL && task.priority !== filters.priority) return false;
     if (filters.status !== ALL && task.status !== filters.status) return false;
 
@@ -104,6 +109,7 @@ export function TaskFiltersBar({
 }) {
   const { data: services = [] } = useQuery(servicesQuery);
   const { data: members = [] } = useQuery(teamMembersQuery);
+  const { data: milestones = [] } = useQuery(milestonesQuery);
 
   const set = <K extends keyof TaskFilters>(key: K, value: TaskFilters[K]) =>
     onChange({ ...filters, [key]: value });
@@ -115,7 +121,7 @@ export function TaskFiltersBar({
       <div className="flex flex-wrap items-center gap-2">
         <div className="relative min-w-[12rem] flex-1">
           <SearchIcon
-            className="pointer-events-none absolute inset-inline-start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
+            className="pointer-events-none absolute start-2.5 top-1/2 size-4 -translate-y-1/2 text-muted-foreground"
             aria-hidden="true"
           />
           <Input
@@ -192,6 +198,24 @@ export function TaskFiltersBar({
             {services.map((service) => (
               <SelectItem key={service.id} value={service.id}>
                 {service.name}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
+
+        <Select value={filters.milestoneId} onValueChange={(v) => set("milestoneId", v)}>
+          <SelectTrigger
+            size="sm"
+            className="w-auto min-w-[9rem]"
+            aria-label={m.task_milestone_label()}
+          >
+            <SelectValue />
+          </SelectTrigger>
+          <SelectContent>
+            <SelectItem value={ALL}>{m.filters_all_milestones()}</SelectItem>
+            {milestones.map((milestone) => (
+              <SelectItem key={milestone.id} value={milestone.id}>
+                {milestone.title}
               </SelectItem>
             ))}
           </SelectContent>

@@ -285,5 +285,14 @@
   "notif_comment_mention": "ذكرك",
   "notif_issue_assigned": "أسند إليك مشكلة",
   "notif_deadline_soon": "موعد نهائي يقترب",
-  "notif_system": "النظام"
+  "notif_system": "النظام",
+  "task_milestone_label": "المرحلة",
+  "task_no_milestone": "بدون مرحلة",
+  "filters_all_milestones": "كل المراحل",
+  "nav_menu": "القائمة",
+  "nav_sections": "الأقسام",
+  "nav_group_work": "الإنتاجية",
+  "nav_group_team": "الفريق",
+  "nav_group_services": "الخدمات",
+  "nav_group_records": "السجلات"
 }

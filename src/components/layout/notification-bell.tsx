@@ -63,7 +63,7 @@ export function NotificationBell() {
           {unread > 0 && (
             <span
               dir="ltr"
-              className="absolute -top-0.5 inset-inline-end-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
+              className="absolute -top-0.5 end-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
             >
               {unread > 9 ? "9+" : unread}
             </span>

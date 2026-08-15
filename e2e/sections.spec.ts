@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, escapeForRegex, loginAndOpenTasks } from "./helpers";
+import { E2E_USERS, escapeForRegex, gotoSection, loginAndOpenTasks } from "./helpers";
 
 test.describe("new sections and task workflow", () => {
   test.beforeEach(async ({ page }) => {
@@ -185,7 +185,7 @@ test.describe("new sections and task workflow", () => {
   });
 
   test("services section lists the real KStack services and opens one", async ({ page }) => {
-    await page.getByRole("link", { name: "Services" }).first().click();
+    await gotoSection(page, "Services");
     await expect(page.getByRole("heading", { name: "Services", exact: true })).toBeVisible();
 
     for (const name of ["Index", "Planner", "Groups", "Grades"]) {
@@ -214,7 +214,7 @@ test.describe("new sections and task workflow", () => {
   });
 
   test("health board lists every service with a status", async ({ page }) => {
-    await page.getByRole("link", { name: "Health" }).first().click();
+    await gotoSection(page, "Health");
     await expect(page.getByRole("heading", { name: "Service health" })).toBeVisible();
     await expect(page.getByRole("link", { name: "Index" })).toBeVisible();
   });
@@ -222,7 +222,7 @@ test.describe("new sections and task workflow", () => {
   test("creates, edits and deletes a sponsored project", async ({ page }) => {
     const name = `مشروع اختبار ${Date.now()}`;
 
-    await page.getByRole("link", { name: "Projects" }).first().click();
+    await gotoSection(page, "Projects");
     await expect(page.getByRole("heading", { name: "Sponsored projects" })).toBeVisible();
 
     await page.getByRole("button", { name: "Add project" }).first().click();

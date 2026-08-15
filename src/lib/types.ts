@@ -8,6 +8,7 @@ export type CurrentUser = {
   email: string;
   displayName: string;
   role: UserRole;
+  jobTitle: string | null;
   mustChangePassword: boolean;
   createdAt: string;
   updatedAt: string;
@@ -114,6 +115,7 @@ export type Task = {
   createdBy: TeamMember;
   assignees: Array<{ userId: string; user: TeamMember }>;
   milestoneId: string | null;
+  milestone: { id: string; title: string; deadline: string | null } | null;
   subtasks: Subtask[];
   comments: TaskComment[];
   links: TaskLink[];

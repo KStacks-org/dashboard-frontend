@@ -9,6 +9,7 @@ export type TaskFormValues = {
   priority: Priority;
   status: TaskStatus;
   serviceId: string | null;
+  milestoneId: string | null;
   assigneeIds: string[];
 };
 

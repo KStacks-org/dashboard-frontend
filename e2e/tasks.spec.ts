@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, escapeForRegex, loginAndOpenTasks } from "./helpers";
+import { E2E_USERS, escapeForRegex, gotoSection, loginAndOpenTasks } from "./helpers";
 
 /** Deterministic deadline inside the current month, so the calendar assertion is stable. */
 function deadlineThisMonth() {
@@ -145,7 +145,7 @@ test.describe("task management", () => {
 
     await expect(page.locator("article", { hasText: title })).toHaveCount(0);
 
-    await page.getByRole("link", { name: "Archive" }).first().click();
+    await gotoSection(page, "Archive");
     const archivedCard = page.locator("article", { hasText: title });
     await expect(archivedCard).toBeVisible();
 

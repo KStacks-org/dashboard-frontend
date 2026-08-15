@@ -31,6 +31,13 @@ export async function loginAndOpenTasks(page: Page) {
   await page.waitForURL("**/tasks");
 }
 
+/** Every section lives in the sidebar, which is a drawer below `lg`. */
+export async function gotoSection(page: Page, name: string) {
+  const menu = page.getByRole("button", { name: "Menu" });
+  if (await menu.isVisible()) await menu.click();
+  await page.getByRole("link", { name, exact: true }).click();
+}
+
 /** Escapes an email (its dots especially) for safe use inside a locator RegExp. */
 export function escapeForRegex(value: string): string {
   return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");

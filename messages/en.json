@@ -285,5 +285,14 @@
   "notif_comment_mention": "mentioned you",
   "notif_issue_assigned": "assigned you an issue",
   "notif_deadline_soon": "Deadline approaching",
-  "notif_system": "System"
+  "notif_system": "System",
+  "task_milestone_label": "Milestone",
+  "task_no_milestone": "No milestone",
+  "filters_all_milestones": "All milestones",
+  "nav_menu": "Menu",
+  "nav_sections": "Sections",
+  "nav_group_work": "Productivity",
+  "nav_group_team": "Team",
+  "nav_group_services": "Services",
+  "nav_group_records": "Records"
 }

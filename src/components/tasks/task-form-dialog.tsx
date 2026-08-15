@@ -25,11 +25,12 @@ import { Textarea } from "@/components/ui/textarea";
 import { type TaskFormValues, useCreateTask, useUpdateTask } from "@/hooks/use-tasks";
 import { ApiError } from "@/lib/api";
 import { fromDateTimeLocalValue, toDateTimeLocalValue } from "@/lib/format";
-import { servicesQuery } from "@/lib/queries";
+import { milestonesQuery, servicesQuery } from "@/lib/queries";
 import type { Priority, Task, TaskStatus } from "@/lib/types";
 import { m } from "@/paraglide/messages";
 
 const NO_SERVICE = "__none__";
+const NO_MILESTONE = "__none__";
 
 type FormState = {
   title: string;
@@ -38,6 +39,7 @@ type FormState = {
   priority: Priority;
   status: TaskStatus;
   serviceId: string;
+  milestoneId: string;
   assigneeIds: string[];
 };
 
@@ -49,6 +51,7 @@ function initialState(task?: Task): FormState {
     priority: task?.priority ?? "MEDIUM",
     status: task?.status ?? "TODO",
     serviceId: task?.serviceId ?? NO_SERVICE,
+    milestoneId: task?.milestoneId ?? NO_MILESTONE,
     assigneeIds: task?.assignees.map((a) => a.userId) ?? [],
   };
 }
@@ -82,6 +85,7 @@ function TaskFormBody({
 }) {
   const isEdit = Boolean(task);
   const { data: services = [] } = useQuery(servicesQuery);
+  const { data: milestones = [] } = useQuery(milestonesQuery);
   const createTask = useCreateTask();
   const updateTask = useUpdateTask();
   const [form, setForm] = useState<FormState>(() => initialState(task));
@@ -92,6 +96,7 @@ function TaskFormBody({
   const priorityId = useId();
   const serviceFieldId = useId();
   const statusFieldId = useId();
+  const milestoneFieldId = useId();
   const assigneesLabelId = useId();
   const assigneesTriggerId = useId();
 
@@ -129,6 +134,7 @@ function TaskFormBody({
       priority: form.priority,
       status: form.status,
       serviceId: form.serviceId === NO_SERVICE ? null : form.serviceId,
+      milestoneId: form.milestoneId === NO_MILESTONE ? null : form.milestoneId,
       assigneeIds: form.assigneeIds,
     };
 
@@ -225,6 +231,26 @@ function TaskFormBody({
                 <SelectItem value="TODO">{m.status_todo()}</SelectItem>
                 <SelectItem value="IN_PROGRESS">{m.status_in_progress()}</SelectItem>
                 <SelectItem value="BLOCKED">{m.status_blocked()}</SelectItem>
+              </SelectContent>
+            </Select>
+          </div>
+
+          <div className="space-y-2">
+            <Label htmlFor={milestoneFieldId}>{m.task_milestone_label()}</Label>
+            <Select
+              value={form.milestoneId}
+              onValueChange={(value) => setForm((f) => ({ ...f, milestoneId: value }))}
+            >
+              <SelectTrigger id={milestoneFieldId} className="w-full">
+                <SelectValue placeholder={m.task_no_milestone()} />
+              </SelectTrigger>
+              <SelectContent>
+                <SelectItem value={NO_MILESTONE}>{m.task_no_milestone()}</SelectItem>
+                {milestones.map((milestone) => (
+                  <SelectItem key={milestone.id} value={milestone.id}>
+                    {milestone.title}
+                  </SelectItem>
+                ))}
               </SelectContent>
             </Select>
           </div>
