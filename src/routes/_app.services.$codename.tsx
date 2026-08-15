@@ -69,7 +69,11 @@ function ServiceDetailPage() {
             <div className="flex flex-wrap items-start justify-between gap-3">
               <div className="flex items-start gap-4">
                 <span className="flex size-14 shrink-0 items-center justify-center rounded-xl border border-border/60 bg-card p-2.5">
-                  <ServiceLogo codename={service.codename} className="size-full" />
+                  <ServiceLogo
+                    codename={service.codename}
+                    logoUrl={service.logoUrl}
+                    className="size-full"
+                  />
                 </span>
                 <div>
                   <h1 className="text-2xl font-semibold tracking-tight">{service.name}</h1>

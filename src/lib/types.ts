@@ -28,6 +28,7 @@ export type Service = {
   description: string;
   status: ServiceStatus;
   url: string | null;
+  logoUrl: string | null;
   sortOrder: number;
   overview: string | null;
   repoUrl: string | null;
@@ -61,6 +62,7 @@ export type ServiceHealth = {
   id: string;
   name: string;
   codename: string;
+  logoUrl: string | null;
   status: ServiceStatus;
   url: string | null;
   healthCheckUrl: string | null;
@@ -173,7 +175,7 @@ export type Issue = {
   priority: Priority;
   status: IssueStatus;
   serviceId: string | null;
-  service: { id: string; name: string; codename: string } | null;
+  service: { id: string; name: string; codename: string; logoUrl: string | null } | null;
   assigneeId: string | null;
   assignee: TeamMember | null;
   reportedById: string;

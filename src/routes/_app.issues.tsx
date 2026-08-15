@@ -228,7 +228,11 @@ function IssuesPage() {
 
                 {issue.service && (
                   <Badge variant="outline" className="text-muted-foreground">
-                    <ServiceLogo codename={issue.service.codename} className="size-3.5" />
+                    <ServiceLogo
+                      codename={issue.service.codename}
+                      logoUrl={issue.service.logoUrl}
+                      className="size-3.5"
+                    />
                     {issue.service.name}
                   </Badge>
                 )}

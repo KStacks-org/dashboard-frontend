@@ -60,7 +60,11 @@ export function TaskDetailDialog({
             <PriorityBadge priority={task.priority} />
             <Badge variant="outline" className="text-muted-foreground">
               {task.service ? (
-                <ServiceLogo codename={task.service.codename} className="size-3.5" />
+                <ServiceLogo
+                  codename={task.service.codename}
+                  logoUrl={task.service.logoUrl}
+                  className="size-3.5"
+                />
               ) : (
                 <LayersIcon className="size-3" aria-hidden="true" />
               )}

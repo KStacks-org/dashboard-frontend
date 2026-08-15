@@ -154,7 +154,11 @@ export function TaskCard({
 
             {task.service && (
               <Badge variant="outline" className="text-muted-foreground">
-                <ServiceLogo codename={task.service.codename} className="size-3.5" />
+                <ServiceLogo
+                  codename={task.service.codename}
+                  logoUrl={task.service.logoUrl}
+                  className="size-3.5"
+                />
                 {task.service.name}
               </Badge>
             )}

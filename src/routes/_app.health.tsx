@@ -56,7 +56,11 @@ function HealthRow({ service }: { service: ServiceHealth }) {
       <div className="flex flex-wrap items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
           <span className="flex size-9 shrink-0 items-center justify-center rounded-lg border border-border/60 bg-background/60 p-1.5">
-            <ServiceLogo codename={service.codename} className="size-full" />
+            <ServiceLogo
+              codename={service.codename}
+              logoUrl={service.logoUrl}
+              className="size-full"
+            />
           </span>
           <div className="min-w-0">
             <Link

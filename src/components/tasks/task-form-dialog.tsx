@@ -271,7 +271,11 @@ function TaskFormBody({
               {services.map((service) => (
                 <SelectItem key={service.id} value={service.id}>
                   <span className="flex items-center gap-2">
-                    <ServiceLogo codename={service.codename} className="size-4" />
+                    <ServiceLogo
+                      codename={service.codename}
+                      logoUrl={service.logoUrl}
+                      className="size-4"
+                    />
                     {service.name}
                   </span>
                 </SelectItem>
