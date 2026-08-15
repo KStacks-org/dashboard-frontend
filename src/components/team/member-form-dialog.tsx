@@ -177,7 +177,7 @@ function MemberFormBody({
               </SelectTrigger>
               <SelectContent>
                 <SelectItem value="MEMBER">{m.team_role_member()}</SelectItem>
-                <SelectItem value="ADMIN">{m.team_role_admin()}</SelectItem>
+                <SelectItem value="SUPER_ADMIN">{m.team_role_super_admin()}</SelectItem>
               </SelectContent>
             </Select>
           </div>

@@ -84,7 +84,8 @@ export function AppNav({ user, onNavigate }: { user: CurrentUser; onNavigate?: (
             {user.displayName}
           </p>
           <p dir="auto" className="truncate text-xs text-muted-foreground">
-            {user.jobTitle ?? (user.role === "ADMIN" ? m.team_role_admin() : m.team_role_member())}
+            {user.jobTitle ??
+              (user.role === "SUPER_ADMIN" ? m.team_role_super_admin() : m.team_role_member())}
           </p>
         </div>
       </div>

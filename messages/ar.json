@@ -216,7 +216,6 @@
   "team_add": "إضافة عضو",
   "team_edit": "تعديل العضو",
   "team_role": "الدور",
-  "team_role_admin": "مشرف",
   "team_role_member": "عضو",
   "team_job_title": "المسمّى الوظيفي",
   "team_email": "البريد الجامعي",
@@ -294,5 +293,15 @@
   "nav_group_work": "الإنتاجية",
   "nav_group_team": "الفريق",
   "nav_group_services": "الخدمات",
-  "nav_group_records": "السجلات"
+  "nav_group_records": "السجلات",
+  "team_role_super_admin": "سوبر أدمن",
+  "team_role_dashboard_admin": "أدمن الداشبورد",
+  "team_role_service_admin": "أدمن {service}",
+  "grants_edit": "إدارة نطاقات الأدمن",
+  "grants_title": "نطاقات الأدمن",
+  "grants_description": "اختر ما يديره {name}. نطاقات الخدمات تُحمل في التوكن المشترك لتتعرّف عليها الخدمة نفسها.",
+  "grants_scope_dashboard": "صلاحية كاملة داخل هذه الداشبورد",
+  "grants_scope_service": "أدمن هذه الخدمة، ومهامها ومشاكلها هنا",
+  "grants_super_admin_note": "السوبر أدمن يملك كل النطاقات أصلًا، فلا شيء لاختياره.",
+  "grants_saved": "تم تحديث النطاقات"
 }

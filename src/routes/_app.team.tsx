@@ -12,9 +12,11 @@ import {
 import { useState } from "react";
 import { toast } from "sonner";
 import { StackingLoader } from "@/components/brand/stacking-loader";
+import { ServiceLogo } from "@/components/services/service-logo";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ProgressBar } from "@/components/shared/progress-bar";
+import { GrantsDialog } from "@/components/team/grants-dialog";
 import { MemberFormDialog } from "@/components/team/member-form-dialog";
 import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
@@ -27,7 +29,7 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUpdateMember } from "@/hooks/use-workspace";
 import { ApiError } from "@/lib/api";
-import { teamQuery } from "@/lib/queries";
+import { adminScopesQuery, teamQuery } from "@/lib/queries";
 import type { TeamMemberProfile } from "@/lib/types";
 import { m } from "@/paraglide/messages";
 
@@ -43,8 +45,13 @@ function TeamPage() {
 
   const [formOpen, setFormOpen] = useState(false);
   const [editing, setEditing] = useState<TeamMemberProfile | undefined>();
+  const [grantsOpen, setGrantsOpen] = useState(false);
+  const [grantee, setGrantee] = useState<TeamMemberProfile | undefined>();
 
-  const isAdmin = user.role === "ADMIN";
+  // Roster management needs the dashboard scope; changing who holds a scope is
+  // narrower still, and only a super admin can do it.
+  const isSuperAdmin = user.role === "SUPER_ADMIN";
+  const isAdmin = isSuperAdmin || user.adminScopes.includes("dashboard");
 
   const toggleActive = (member: TeamMemberProfile) => {
     updateMember.mutate(
@@ -91,7 +98,12 @@ function TeamPage() {
               key={member.id}
               member={member}
               isAdmin={isAdmin}
+              canEditGrants={isSuperAdmin}
               isSelf={member.id === user.id}
+              onEditGrants={() => {
+                setGrantee(member);
+                setGrantsOpen(true);
+              }}
               onEdit={() => {
                 setEditing(member);
                 setFormOpen(true);
@@ -103,6 +115,7 @@ function TeamPage() {
       )}
 
       <MemberFormDialog open={formOpen} onOpenChange={setFormOpen} member={editing} />
+      <GrantsDialog open={grantsOpen} onOpenChange={setGrantsOpen} member={grantee} />
     </div>
   );
 }
@@ -110,14 +123,18 @@ function TeamPage() {
 function MemberCard({
   member,
   isAdmin,
+  canEditGrants,
   isSelf,
   onEdit,
+  onEditGrants,
   onToggleActive,
 }: {
   member: TeamMemberProfile;
   isAdmin: boolean;
+  canEditGrants: boolean;
   isSelf: boolean;
   onEdit: () => void;
+  onEditGrants: () => void;
   onToggleActive: () => void;
 }) {
   const { workload } = member;
@@ -143,12 +160,7 @@ function MemberCard({
               <h2 dir="auto" className="font-semibold break-words">
                 {member.displayName}
               </h2>
-              {member.role === "ADMIN" && (
-                <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
-                  <ShieldIcon className="size-3" aria-hidden="true" />
-                  {m.team_role_admin()}
-                </Badge>
-              )}
+              <RoleBadges member={member} />
               {!member.isActive && (
                 <Badge variant="outline" className="text-muted-foreground">
                   {m.team_inactive()}
@@ -179,6 +191,12 @@ function MemberCard({
                 <PencilIcon aria-hidden="true" />
                 {m.team_edit()}
               </DropdownMenuItem>
+              {canEditGrants && (
+                <DropdownMenuItem onSelect={onEditGrants}>
+                  <ShieldIcon aria-hidden="true" />
+                  {m.grants_edit()}
+                </DropdownMenuItem>
+              )}
               {/* Deactivating yourself would lock you out mid-session. */}
               {!isSelf && (
                 <DropdownMenuItem
@@ -255,5 +273,47 @@ function MemberCard({
         </div>
       </section>
     </article>
+  );
+}
+
+/**
+ * What this person administers, at a glance. A super admin gets one badge that
+ * says so; everyone else gets one badge per scope, because "admin of kdevs and
+ * kgroups" is a different fact from "admin", and the difference matters.
+ */
+function RoleBadges({ member }: { member: TeamMemberProfile }) {
+  // Scopes are stored as codenames; people know the services by their names.
+  const { data: scopes = [] } = useQuery(adminScopesQuery);
+  const nameOf = (scope: string) => scopes.find((entry) => entry.scope === scope)?.name ?? scope;
+
+  if (member.role === "SUPER_ADMIN") {
+    return (
+      <Badge variant="outline" className="border-primary/40 bg-primary/10 text-primary">
+        <ShieldIcon className="size-3" aria-hidden="true" />
+        {m.team_role_super_admin()}
+      </Badge>
+    );
+  }
+
+  return (
+    <>
+      {member.adminGrants.map(({ scope }) =>
+        scope === "dashboard" ? (
+          <Badge
+            key={scope}
+            variant="outline"
+            className="border-primary/40 bg-primary/10 text-primary"
+          >
+            <ShieldIcon className="size-3" aria-hidden="true" />
+            {m.team_role_dashboard_admin()}
+          </Badge>
+        ) : (
+          <Badge key={scope} variant="outline" className="text-muted-foreground">
+            <ServiceLogo codename={scope} className="size-3.5" />
+            {m.team_role_service_admin({ service: nameOf(scope) })}
+          </Badge>
+        ),
+      )}
+    </>
   );
 }

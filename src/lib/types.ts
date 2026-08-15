@@ -10,6 +10,8 @@ export type CurrentUser = {
   role: UserRole;
   jobTitle: string | null;
   mustChangePassword: boolean;
+  /** Scopes this account administers. A super admin holds all without listing them. */
+  adminScopes: string[];
   createdAt: string;
   updatedAt: string;
 };
@@ -138,7 +140,14 @@ export type SponsoredProject = {
   updatedAt: string;
 };
 
-export type UserRole = "ADMIN" | "MEMBER";
+export type UserRole = "SUPER_ADMIN" | "MEMBER";
+
+/** A grantable scope: this app, or one KStack service. */
+export type AdminScope = {
+  scope: string;
+  name: string;
+  isDashboard: boolean;
+};
 export type IssueStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
 export type NotificationType =
   | "TASK_ASSIGNED"
@@ -152,6 +161,8 @@ export type TeamMemberProfile = {
   email: string;
   displayName: string;
   role: UserRole;
+  /** Scopes this person administers. Empty for a super admin, who holds all. */
+  adminGrants: { scope: string }[];
   jobTitle: string | null;
   responsibilities: string[];
   isActive: boolean;

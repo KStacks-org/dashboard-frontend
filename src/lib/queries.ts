@@ -1,6 +1,7 @@
 import { queryOptions } from "@tanstack/react-query";
 import { apiRequest } from "@/lib/api";
 import type {
+  AdminScope,
   AppNotification,
   CurrentUser,
   GitHubActivity,
@@ -80,6 +81,11 @@ export const teamQuery = queryOptions({
 export const issuesQuery = queryOptions({
   queryKey: ["issues"],
   queryFn: () => apiRequest<{ issues: Issue[] }>("/issues").then((r) => r.issues),
+});
+
+export const adminScopesQuery = queryOptions({
+  queryKey: ["adminScopes"],
+  queryFn: () => apiRequest<{ scopes: AdminScope[] }>("/team/scopes").then((r) => r.scopes),
 });
 
 export const milestonesQuery = queryOptions({

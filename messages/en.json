@@ -216,7 +216,6 @@
   "team_add": "Add member",
   "team_edit": "Edit member",
   "team_role": "Role",
-  "team_role_admin": "Admin",
   "team_role_member": "Member",
   "team_job_title": "Job title",
   "team_email": "University email",
@@ -294,5 +293,15 @@
   "nav_group_work": "Productivity",
   "nav_group_team": "Team",
   "nav_group_services": "Services",
-  "nav_group_records": "Records"
+  "nav_group_records": "Records",
+  "team_role_super_admin": "Super admin",
+  "team_role_dashboard_admin": "Dashboard admin",
+  "team_role_service_admin": "{service} admin",
+  "grants_edit": "Manage admin scopes",
+  "grants_title": "Admin scopes",
+  "grants_description": "Choose what {name} administers. Service scopes travel in the shared token so the service itself recognises them.",
+  "grants_scope_dashboard": "Full authority in this dashboard",
+  "grants_scope_service": "Admin of this service, and of its tasks and issues here",
+  "grants_super_admin_note": "A super admin already holds every scope, so there is nothing to choose.",
+  "grants_saved": "Scopes updated"
 }
