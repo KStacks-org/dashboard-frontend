@@ -5,21 +5,26 @@ export const E2E_PASSWORD = "123456";
 
 export const E2E_USERS = {
   /** Password already rotated — lands straight on the dashboard. */
-  rotated: { username: "e2e.rotated", displayName: "اختبار مُفعَّل" },
+  rotated: { email: "e2e.rotated@stu.kau.edu.sa", displayName: "اختبار مُفعَّل" },
   /** Still on the temporary password — must be forced through the change screen. */
-  fresh: { username: "e2e.fresh", displayName: "اختبار جديد" },
+  fresh: { email: "e2e.fresh@stu.kau.edu.sa", displayName: "اختبار جديد" },
   /** A second signed-in user, for creator-only permission checks. */
-  other: { username: "e2e.other", displayName: "اختبار آخر" },
+  other: { email: "e2e.other@stu.kau.edu.sa", displayName: "اختبار آخر" },
 } as const;
 
-export async function login(page: Page, username: string, password = E2E_PASSWORD) {
+export async function login(page: Page, email: string, password = E2E_PASSWORD) {
   await page.goto("/login");
-  await page.getByLabel("Username").fill(username);
+  await page.getByLabel("University email").fill(email);
   await page.getByLabel("Password", { exact: true }).fill(password);
   await page.getByRole("button", { name: "Log in" }).click();
 }
 
 export async function loginAsRotatedUser(page: Page) {
-  await login(page, E2E_USERS.rotated.username);
+  await login(page, E2E_USERS.rotated.email);
   await page.waitForURL("**/tasks");
+}
+
+/** Escapes an email (its dots especially) for safe use inside a locator RegExp. */
+export function escapeForRegex(value: string): string {
+  return value.replace(/[.*+?^${}()|[\]\\]/g, "\\$&");
 }

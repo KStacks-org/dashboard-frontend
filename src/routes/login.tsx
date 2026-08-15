@@ -26,6 +26,11 @@ export const Route = createFileRoute("/login")({
 
 function messageForError(error: unknown): string {
   if (error instanceof ApiError) {
+    // The address is fine but nobody on the roster owns it — say so plainly
+    // rather than sending the person hunting for a password typo.
+    if (error.code === "EMAIL_NOT_ALLOWED") return m.login_error_not_allowed();
+    // Zod rejected the domain before the lookup.
+    if (error.code === "VALIDATION_ERROR") return m.login_error_domain();
     if (error.status === 401) return m.login_error_invalid();
     if (error.status === 429) return m.login_error_rate_limited();
   }
@@ -35,14 +40,14 @@ function messageForError(error: unknown): string {
 function LoginPage() {
   const navigate = useNavigate();
   const login = useLogin();
-  const usernameId = useId();
+  const emailId = useId();
   const passwordId = useId();
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const handleSubmit = async (event: React.FormEvent) => {
     event.preventDefault();
-    const user = await login.mutateAsync({ username, password }).catch(() => null);
+    const user = await login.mutateAsync({ email, password }).catch(() => null);
     if (!user) return;
     await navigate({
       to: user.mustChangePassword ? "/change-password" : "/tasks",
@@ -72,16 +77,20 @@ function LoginPage() {
 
         <form onSubmit={handleSubmit} className="space-y-4" noValidate>
           <div className="space-y-2">
-            <Label htmlFor={usernameId}>{m.login_username_label()}</Label>
+            <Label htmlFor={emailId}>{m.login_email_label()}</Label>
             <Input
-              id={usernameId}
-              name="username"
+              id={emailId}
+              name="email"
+              type="email"
+              inputMode="email"
               autoComplete="username"
+              placeholder={m.login_email_placeholder()}
               autoFocus
               required
+              // Addresses are Latin, so keep the field LTR even in the Arabic UI.
               dir="ltr"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
               aria-invalid={login.isError || undefined}
             />
           </div>

@@ -6,7 +6,7 @@ import type { CurrentUser } from "@/lib/types";
 export function useLogin() {
   const queryClient = useQueryClient();
   return useMutation({
-    mutationFn: (credentials: { username: string; password: string }) =>
+    mutationFn: (credentials: { email: string; password: string }) =>
       apiRequest<{ user: CurrentUser }>("/auth/login", {
         method: "POST",
         body: credentials,

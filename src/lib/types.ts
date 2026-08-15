@@ -5,7 +5,7 @@ export type SponsoredProjectStatus = "PROPOSED" | "IN_REVIEW" | "ACTIVE" | "LAUN
 
 export type CurrentUser = {
   id: string;
-  username: string;
+  email: string;
   displayName: string;
   mustChangePassword: boolean;
   createdAt: string;
@@ -14,7 +14,7 @@ export type CurrentUser = {
 
 export type TeamMember = {
   id: string;
-  username: string;
+  email: string;
   displayName: string;
 };
 

@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, loginAsRotatedUser } from "./helpers";
+import { E2E_USERS, escapeForRegex, loginAsRotatedUser } from "./helpers";
 
 /** Deterministic deadline inside the current month, so the calendar assertion is stable. */
 function deadlineThisMonth() {
@@ -43,9 +43,15 @@ test.describe("task management", () => {
     await dialog.getByRole("combobox", { name: "Assignees" }).click();
     const search = page.getByPlaceholder("Search team members...");
     await search.fill("اختبار");
-    await page.getByRole("option", { name: new RegExp(E2E_USERS.rotated.username) }).click();
-    await page.getByRole("option", { name: new RegExp(E2E_USERS.other.username) }).click();
-    await page.getByRole("option", { name: new RegExp(E2E_USERS.fresh.username) }).click();
+    await page
+      .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.rotated.email)) })
+      .click();
+    await page
+      .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.other.email)) })
+      .click();
+    await page
+      .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.fresh.email)) })
+      .click();
     await page.keyboard.press("Escape");
 
     // Selected people are listed as removable chips.
@@ -185,7 +191,7 @@ test.describe("task management", () => {
     const otherContext = await browser.newContext();
     const otherPage = await otherContext.newPage();
     await otherPage.goto("/login");
-    await otherPage.getByLabel("Username").fill(E2E_USERS.other.username);
+    await otherPage.getByLabel("University email").fill(E2E_USERS.other.email);
     await otherPage.getByLabel("Password", { exact: true }).fill("123456");
     await otherPage.getByRole("button", { name: "Log in" }).click();
     await otherPage.waitForURL("**/tasks");
@@ -206,7 +212,9 @@ async function createSimpleTask(page: import("@playwright/test").Page, title: st
   const dialog = page.getByRole("dialog");
   await dialog.getByLabel("Title").fill(title);
   await dialog.getByRole("combobox", { name: "Assignees" }).click();
-  await page.getByRole("option", { name: new RegExp(E2E_USERS.rotated.username) }).click();
+  await page
+    .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.rotated.email)) })
+    .click();
   await page.keyboard.press("Escape");
   await dialog.getByRole("button", { name: "Create task" }).click();
   await expect(dialog).toBeHidden();

@@ -80,8 +80,8 @@ export function AssigneeCombobox({
                   return (
                     <CommandItem
                       key={member.id}
-                      // Include the username so the two "ياسر" accounts stay distinguishable.
-                      value={`${member.displayName} ${member.username}`}
+                      // Include the email so the two "ياسر" accounts stay distinguishable.
+                      value={`${member.displayName} ${member.email}`}
                       onSelect={() => toggle(member.id)}
                     >
                       <span
@@ -94,8 +94,12 @@ export function AssigneeCombobox({
                       <span dir="auto" className="flex-1 truncate">
                         {member.displayName}
                       </span>
-                      <span className="text-xs text-muted-foreground" dir="ltr">
-                        {member.username}
+                      <span
+                        className="max-w-[10rem] truncate text-xs text-muted-foreground"
+                        dir="ltr"
+                        title={member.email}
+                      >
+                        {member.email}
                       </span>
                     </CommandItem>
                   );

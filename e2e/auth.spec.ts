@@ -9,13 +9,25 @@ test.describe("authentication", () => {
   });
 
   test("shows an inline error for a wrong password and stays on /login", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.username, "totally-wrong");
-    await expect(page.getByRole("alert")).toHaveText("Invalid username or password");
+    await login(page, E2E_USERS.rotated.email, "totally-wrong");
+    await expect(page.getByRole("alert")).toHaveText("Invalid email or password");
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test("refuses an email outside the university domain", async ({ page }) => {
+    await login(page, "someone@gmail.com");
+    await expect(page.getByRole("alert")).toContainText("@stu.kau.edu.sa");
+    await expect(page).toHaveURL(/\/login/);
+  });
+
+  test("tells an unrostered university email it is not authorised", async ({ page }) => {
+    await login(page, "not.on.the.team@stu.kau.edu.sa");
+    await expect(page.getByRole("alert")).toContainText("not authorised");
     await expect(page).toHaveURL(/\/login/);
   });
 
   test("signs in an activated account and lands on the dashboard", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.username);
+    await login(page, E2E_USERS.rotated.email);
     await expect(page).toHaveURL(/\/tasks/);
     await expect(page.getByRole("heading", { name: "Tasks", exact: true })).toBeVisible();
     await expect(page.getByText(E2E_USERS.rotated.displayName)).toBeVisible();
@@ -24,7 +36,7 @@ test.describe("authentication", () => {
   test("forces a temporary-password account through the change screen and blocks bypass", async ({
     page,
   }) => {
-    await login(page, E2E_USERS.fresh.username);
+    await login(page, E2E_USERS.fresh.email);
     await expect(page).toHaveURL(/\/change-password/);
 
     // Trying to jump straight to the dashboard bounces back.
@@ -43,15 +55,15 @@ test.describe("authentication", () => {
     await page.getByRole("button", { name: "Log out" }).click();
     await expect(page).toHaveURL(/\/login/);
 
-    await login(page, E2E_USERS.fresh.username, E2E_PASSWORD);
-    await expect(page.getByRole("alert")).toHaveText("Invalid username or password");
+    await login(page, E2E_USERS.fresh.email, E2E_PASSWORD);
+    await expect(page.getByRole("alert")).toHaveText("Invalid email or password");
 
-    await login(page, E2E_USERS.fresh.username, newPassword);
+    await login(page, E2E_USERS.fresh.email, newPassword);
     await expect(page).toHaveURL(/\/tasks/);
   });
 
   test("logging out invalidates the session", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.username);
+    await login(page, E2E_USERS.rotated.email);
     await expect(page).toHaveURL(/\/tasks/);
 
     await page.getByRole("button", { name: "Log out" }).click();

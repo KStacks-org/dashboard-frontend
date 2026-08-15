@@ -6,10 +6,9 @@
   "nav_logout": "تسجيل الخروج",
   "login_title": "أهلاً بعودتك",
   "login_subtitle": "سجّل الدخول إلى حسابك في KStacks",
-  "login_username_label": "اسم المستخدم",
   "login_password_label": "كلمة المرور",
   "login_submit": "تسجيل الدخول",
-  "login_error_invalid": "اسم المستخدم أو كلمة المرور غير صحيحة",
+  "login_error_invalid": "البريد الإلكتروني أو كلمة المرور غير صحيحة",
   "login_error_generic": "حدث خطأ ما. حاول مرة أخرى.",
   "login_error_rate_limited": "محاولات كثيرة جدًا. الرجاء الانتظار والمحاولة مرة أخرى.",
   "change_password_title": "تعيين كلمة مرور جديدة",
@@ -182,5 +181,9 @@
   "details_expand": "عرض التفاصيل",
   "details_collapse": "إخفاء التفاصيل",
   "comments_more": "و{count} تعليق آخر",
-  "comments_view_all": "افتح المهمة للرد"
+  "comments_view_all": "افتح المهمة للرد",
+  "login_email_label": "البريد الجامعي",
+  "login_email_placeholder": "you@stu.kau.edu.sa",
+  "login_error_domain": "استخدم بريدك الجامعي المنتهي بـ @stu.kau.edu.sa",
+  "login_error_not_allowed": "هذا البريد غير مسموح له بالدخول. اطلب من الفريق إضافتك."
 }

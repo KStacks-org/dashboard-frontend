@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, loginAsRotatedUser } from "./helpers";
+import { E2E_USERS, escapeForRegex, loginAsRotatedUser } from "./helpers";
 
 test.describe("new sections and task workflow", () => {
   test.beforeEach(async ({ page }) => {
@@ -94,8 +94,12 @@ test.describe("new sections and task workflow", () => {
     let dialog = page.getByRole("dialog");
     await dialog.getByLabel("Title").fill(title);
     await dialog.getByRole("combobox", { name: "Assignees" }).click();
-    await page.getByRole("option", { name: new RegExp(E2E_USERS.rotated.username) }).click();
-    await page.getByRole("option", { name: new RegExp(E2E_USERS.other.username) }).click();
+    await page
+      .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.rotated.email)) })
+      .click();
+    await page
+      .getByRole("option", { name: new RegExp(escapeForRegex(E2E_USERS.other.email)) })
+      .click();
     await page.keyboard.press("Escape");
     await dialog.getByRole("button", { name: "Create task" }).click();
     await expect(page.getByRole("dialog", { name: "New task" })).toBeHidden();
