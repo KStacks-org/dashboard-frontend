@@ -9,6 +9,7 @@ import {
   GitPullRequestIcon,
   Loader2Icon,
   RefreshCwIcon,
+  UserIcon,
 } from "lucide-react";
 import type { ReactNode } from "react";
 import { StackingLoader } from "@/components/brand/stacking-loader";
@@ -285,13 +286,17 @@ function Empty() {
   return <p className="py-4 text-sm text-muted-foreground">{m.github_empty()}</p>;
 }
 
-/** GitHub avatars are remote images; fall back to initials if one fails. */
+/** GitHub avatars are remote images; fall back to a generic mark if one fails. */
 function Avatar({ url, name }: { url: string | null; name: string }) {
   return url ? (
-    <img src={url} alt="" loading="lazy" className="mt-0.5 size-6 shrink-0 rounded-full bg-muted" />
+    <img src={url} alt="" loading="lazy" className="mt-0.5 size-6 shrink-0 rounded-lg bg-muted" />
   ) : (
-    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-[10px] font-semibold text-primary">
-      {name.slice(0, 2)}
+    <span
+      role="img"
+      className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-lg bg-primary/15 text-primary"
+      aria-label={name}
+    >
+      <UserIcon className="size-[55%]" aria-hidden="true" />
     </span>
   );
 }

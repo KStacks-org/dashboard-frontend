@@ -12,7 +12,10 @@
  * kstacks-frontend-identity skill's "Dark mode surfaces" guidance.
  */
 :root {
-  --radius: 0.625rem;
+  /* Sharper than shadcn's 0.625rem default — KStacks' identity is angular
+     (diamond/chevron marks), so cards and controls read closer to the KAUIndex
+     ecosystem's tight corners than a soft "SaaS" radius. */
+  --radius: 0.5rem;
 
   --background: #0b0b0b;
   --foreground: #ffffff;

@@ -13,6 +13,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import { ServiceLogo } from "@/components/services/service-logo";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
 import { StatusBadge } from "@/components/tasks/status-badge";
 import { hasExpandableDetails, TaskDetailPanel } from "@/components/tasks/task-detail-panel";
@@ -216,10 +217,10 @@ export function TaskCard({
               {task.assignees.map(({ user }) => (
                 <span
                   key={user.id}
-                  dir="auto"
-                  className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                  className="flex items-center gap-1 rounded-full bg-primary/10 py-0.5 ps-0.5 pe-2 text-xs font-medium text-primary"
                 >
-                  {user.displayName}
+                  <UserAvatar className="size-4" isCreator={user.id === task.createdById} />
+                  <span dir="auto">{user.displayName}</span>
                 </span>
               ))}
             </div>

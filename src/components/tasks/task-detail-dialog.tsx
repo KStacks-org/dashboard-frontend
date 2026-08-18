@@ -1,5 +1,6 @@
-import { CalendarIcon, LayersIcon, UserIcon } from "lucide-react";
+import { CalendarIcon, LayersIcon, PenLineIcon } from "lucide-react";
 import { ServiceLogo } from "@/components/services/service-logo";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { PriorityBadge } from "@/components/tasks/priority-badge";
 import { StatusBadge } from "@/components/tasks/status-badge";
 import { SubtaskList } from "@/components/tasks/subtask-list";
@@ -86,7 +87,7 @@ export function TaskDetailDialog({
               )}
             </Badge>
             <Badge variant="outline" className="text-muted-foreground">
-              <UserIcon className="size-3" aria-hidden="true" />
+              <PenLineIcon className="size-3" aria-hidden="true" />
               <span dir="auto">{m.task_created_by({ name: task.createdBy.displayName })}</span>
             </Badge>
           </div>
@@ -98,10 +99,10 @@ export function TaskDetailDialog({
                 {taskAssignees.map((user) => (
                   <li
                     key={user.id}
-                    dir="auto"
-                    className="rounded-full bg-primary/10 px-2.5 py-1 text-xs font-medium text-primary"
+                    className="flex items-center gap-1.5 rounded-full bg-primary/10 py-1 ps-1 pe-2.5 text-xs font-medium text-primary"
                   >
-                    {user.displayName}
+                    <UserAvatar className="size-4.5" isCreator={user.id === task.createdById} />
+                    <span dir="auto">{user.displayName}</span>
                   </li>
                 ))}
               </ul>
@@ -115,7 +116,12 @@ export function TaskDetailDialog({
           <TaskLinks taskId={task.id} links={task.links} />
 
           <Separator />
-          <TaskComments taskId={task.id} comments={task.comments} currentUserId={currentUserId} />
+          <TaskComments
+            taskId={task.id}
+            comments={task.comments}
+            currentUserId={currentUserId}
+            taskCreatorId={task.createdById}
+          />
         </div>
       </DialogContent>
     </Dialog>

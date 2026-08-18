@@ -1,5 +1,5 @@
 import { ExternalLinkIcon, LinkIcon, ListChecksIcon, MessageSquareIcon } from "lucide-react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Checkbox } from "@/components/ui/checkbox";
 import { useToggleSubtask } from "@/hooks/use-tasks";
 import { formatDateTime } from "@/lib/format";
@@ -104,11 +104,10 @@ export function TaskDetailPanel({ task }: { task: Task }) {
           <ul className="space-y-2">
             {visibleComments.map((comment) => (
               <li key={comment.id} className="flex gap-2">
-                <Avatar className="mt-0.5 size-6 shrink-0">
-                  <AvatarFallback className="bg-primary/15 text-[9px] font-semibold text-primary">
-                    {comment.author.displayName.trim().slice(0, 2)}
-                  </AvatarFallback>
-                </Avatar>
+                <UserAvatar
+                  className="mt-0.5 size-6 shrink-0"
+                  isCreator={comment.authorId === task.createdById}
+                />
                 <div className="min-w-0 flex-1">
                   <div className="flex flex-wrap items-baseline gap-x-2">
                     <span dir="auto" className="text-xs font-medium">

@@ -15,7 +15,7 @@ import {
 import { KStackLogo } from "@/components/brand/kstack-logo";
 import { LanguageToggle } from "@/components/layout/language-toggle";
 import { NotificationBell } from "@/components/layout/notification-bell";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import { useLogout } from "@/hooks/use-auth";
 import type { CurrentUser } from "@/lib/types";
@@ -69,16 +69,11 @@ const itemClass =
  */
 export function AppNav({ user, onNavigate }: { user: CurrentUser; onNavigate?: () => void }) {
   const logout = useLogout();
-  const initials = user.displayName.trim().slice(0, 2);
 
   return (
     <div className="flex h-full flex-col">
       <div className="flex items-center gap-3 border-b border-border px-4 py-3">
-        <Avatar className="size-9">
-          <AvatarFallback className="bg-primary/15 text-xs font-semibold text-primary">
-            {initials}
-          </AvatarFallback>
-        </Avatar>
+        <UserAvatar className="size-9" isSuperAdmin={user.role === "SUPER_ADMIN"} />
         <div className="min-w-0 flex-1">
           <p dir="auto" className="truncate text-sm font-semibold">
             {user.displayName}

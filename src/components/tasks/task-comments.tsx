@@ -1,6 +1,6 @@
 import { Loader2Icon, SendIcon } from "lucide-react";
 import { useState } from "react";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { Button } from "@/components/ui/button";
 import { Textarea } from "@/components/ui/textarea";
 import { useAddComment, useDeleteComment, useUpdateComment } from "@/hooks/use-tasks";
@@ -12,10 +12,13 @@ export function TaskComments({
   taskId,
   comments,
   currentUserId,
+  taskCreatorId,
 }: {
   taskId: string;
   comments: TaskComment[];
   currentUserId: string;
+  /** Marks whichever comment author also created the task. */
+  taskCreatorId: string;
 }) {
   const [draft, setDraft] = useState("");
   const addComment = useAddComment();
@@ -41,6 +44,7 @@ export function TaskComments({
               key={comment.id}
               comment={comment}
               canManage={comment.authorId === currentUserId}
+              isCreator={comment.authorId === taskCreatorId}
             />
           ))}
         </ul>
@@ -70,7 +74,15 @@ export function TaskComments({
   );
 }
 
-function CommentRow({ comment, canManage }: { comment: TaskComment; canManage: boolean }) {
+function CommentRow({
+  comment,
+  canManage,
+  isCreator,
+}: {
+  comment: TaskComment;
+  canManage: boolean;
+  isCreator: boolean;
+}) {
   const [editing, setEditing] = useState(false);
   const [draft, setDraft] = useState(comment.body);
   const updateComment = useUpdateComment();
@@ -85,11 +97,7 @@ function CommentRow({ comment, canManage }: { comment: TaskComment; canManage: b
 
   return (
     <li className="flex gap-2.5">
-      <Avatar className="mt-0.5 size-7 shrink-0">
-        <AvatarFallback className="bg-primary/15 text-[10px] font-semibold text-primary">
-          {comment.author.displayName.trim().slice(0, 2)}
-        </AvatarFallback>
-      </Avatar>
+      <UserAvatar className="mt-0.5 size-7 shrink-0" isCreator={isCreator} />
 
       <div className="min-w-0 flex-1 space-y-1">
         <div className="flex flex-wrap items-baseline gap-x-2 gap-y-0.5">

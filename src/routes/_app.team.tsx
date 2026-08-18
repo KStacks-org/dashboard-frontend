@@ -16,9 +16,9 @@ import { ServiceLogo } from "@/components/services/service-logo";
 import { EmptyState } from "@/components/shared/empty-state";
 import { ErrorState } from "@/components/shared/error-state";
 import { ProgressBar } from "@/components/shared/progress-bar";
+import { UserAvatar } from "@/components/shared/user-avatar";
 import { GrantsDialog } from "@/components/team/grants-dialog";
 import { MemberFormDialog } from "@/components/team/member-form-dialog";
-import { Avatar, AvatarFallback } from "@/components/ui/avatar";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import {
@@ -149,11 +149,7 @@ function MemberCard({
     >
       <div className="flex items-start justify-between gap-3">
         <div className="flex min-w-0 items-start gap-3">
-          <Avatar className="size-10 shrink-0">
-            <AvatarFallback className="bg-primary/15 text-sm font-semibold text-primary">
-              {member.displayName.trim().slice(0, 2)}
-            </AvatarFallback>
-          </Avatar>
+          <UserAvatar className="size-10 shrink-0" isSuperAdmin={member.role === "SUPER_ADMIN"} />
 
           <div className="min-w-0">
             <div className="flex flex-wrap items-center gap-1.5">
