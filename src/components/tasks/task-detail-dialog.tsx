@@ -99,7 +99,7 @@ export function TaskDetailDialog({
                 {taskAssignees.map((user) => (
                   <li
                     key={user.id}
-                    className="flex items-center gap-1.5 rounded-full bg-primary/10 py-1 ps-1 pe-2.5 text-xs font-medium text-primary"
+                    className="flex items-center gap-1.5 rounded-md bg-primary/10 py-1 ps-1 pe-2.5 text-xs font-medium text-primary"
                   >
                     <UserAvatar className="size-4.5" isCreator={user.id === task.createdById} />
                     <span dir="auto">{user.displayName}</span>

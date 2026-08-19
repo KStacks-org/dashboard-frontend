@@ -296,3 +296,30 @@ export type GitHubActivity = {
   }>;
   branches: Array<{ repo: string; name: string; url: string; isDefault: boolean }>;
 };
+
+export type SupportSenderType = "REPORTER" | "STAFF";
+export type SupportConversationStatus = "OPEN" | "CLOSED";
+
+export type SupportMessage = {
+  id: string;
+  senderType: SupportSenderType;
+  asOrg: boolean;
+  body: string;
+  createdAt: string;
+  staff: { id: string; displayName: string } | null;
+};
+
+export type SupportConversation = {
+  id: string;
+  token: string;
+  status: SupportConversationStatus;
+  serviceCodename: string;
+  pageContext: string | null;
+  reporterName: string;
+  reporterEmail: string;
+  createdAt: string;
+  updatedAt: string;
+  closedAt: string | null;
+  closedBy: { id: string; displayName: string } | null;
+  messages: SupportMessage[];
+};

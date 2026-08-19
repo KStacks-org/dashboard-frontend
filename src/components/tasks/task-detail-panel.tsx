@@ -57,7 +57,7 @@ export function TaskDetailPanel({ task }: { task: Task }) {
                 {subtask.assignee && (
                   <span
                     dir="auto"
-                    className="shrink-0 rounded-full bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
+                    className="shrink-0 rounded-md bg-muted px-2 py-0.5 text-[11px] text-muted-foreground"
                   >
                     {subtask.assignee.displayName}
                   </span>

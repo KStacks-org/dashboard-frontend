@@ -303,5 +303,21 @@
   "grants_scope_dashboard": "صلاحية كاملة داخل هذه الداشبورد",
   "grants_scope_service": "أدمن هذه الخدمة، ومهامها ومشاكلها هنا",
   "grants_super_admin_note": "السوبر أدمن يملك كل النطاقات أصلًا، فلا شيء لاختياره.",
-  "grants_saved": "تم تحديث النطاقات"
+  "grants_saved": "تم تحديث النطاقات",
+  "nav_support": "الدعم الفني",
+  "support_title": "الدعم الفني",
+  "support_subtitle": "البلاغات المرسلة من خدمات KStack، في مكان واحد.",
+  "support_open": "مفتوحة",
+  "support_closed": "مغلقة",
+  "support_status_open": "مفتوحة",
+  "support_status_closed": "مغلقة",
+  "support_empty_open_title": "ما فيه بلاغات مفتوحة",
+  "support_empty_closed_title": "ما فيه بلاغات مغلقة",
+  "support_empty_body": "البلاغات المرسلة من زر \"الإبلاغ عن مشكلة\" بأي خدمة تظهر هنا.",
+  "support_kstack_team": "فريق KStack",
+  "support_reply_placeholder": "اكتب رد…",
+  "support_reply_as_org": "أرسل باسم KStack",
+  "support_close": "وضع كمحلولة",
+  "support_reopen": "إعادة فتح",
+  "support_send": "إرسال"
 }

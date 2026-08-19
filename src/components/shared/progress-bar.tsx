@@ -4,14 +4,14 @@ export function ProgressBar({ percent, className }: { percent: number; className
 
   return (
     <div
-      className={`mt-2 h-2 w-full overflow-hidden rounded-full bg-muted ${className ?? ""}`}
+      className={`mt-2 h-2 w-full overflow-hidden rounded-md bg-muted ${className ?? ""}`}
       role="progressbar"
       aria-valuenow={clamped}
       aria-valuemin={0}
       aria-valuemax={100}
     >
       <div
-        className="h-full rounded-full bg-primary transition-[width] duration-300"
+        className="h-full rounded-md bg-primary transition-[width] duration-300"
         style={{ width: `${clamped}%` }}
       />
     </div>

@@ -13,6 +13,8 @@ import type {
   ServiceHealth,
   ServiceListItem,
   SponsoredProject,
+  SupportConversation,
+  SupportConversationStatus,
   Task,
   TeamMember,
   TeamMemberProfile,
@@ -105,6 +107,26 @@ export const notificationsQuery = queryOptions({
   queryKey: ["notifications"],
   queryFn: () => apiRequest<{ notifications: AppNotification[]; unread: number }>("/notifications"),
 });
+
+export function supportConversationsQuery(status: SupportConversationStatus) {
+  return queryOptions({
+    queryKey: ["supportConversations", "list", status],
+    queryFn: () =>
+      apiRequest<{ conversations: SupportConversation[] }>(`/support?status=${status}`).then(
+        (r) => r.conversations,
+      ),
+  });
+}
+
+export function supportConversationQuery(id: string) {
+  return queryOptions({
+    queryKey: ["supportConversations", "detail", id],
+    queryFn: () =>
+      apiRequest<{ conversation: SupportConversation }>(`/support/${id}`).then(
+        (r) => r.conversation,
+      ),
+  });
+}
 
 export const githubActivityQuery = queryOptions({
   queryKey: ["githubActivity"],

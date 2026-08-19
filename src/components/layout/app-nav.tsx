@@ -8,6 +8,7 @@ import {
   HandshakeIcon,
   LayersIcon,
   LayoutGridIcon,
+  LifeBuoyIcon,
   LogOutIcon,
   SquareCheckBigIcon,
   UsersIcon,
@@ -35,6 +36,7 @@ const NAV_GROUPS = [
       { to: "/tasks", icon: SquareCheckBigIcon, label: () => m.nav_tasks() },
       { to: "/milestones", icon: FlagIcon, label: () => m.nav_milestones() },
       { to: "/issues", icon: BugIcon, label: () => m.nav_issues() },
+      { to: "/support", icon: LifeBuoyIcon, label: () => m.nav_support() },
     ],
   },
   {

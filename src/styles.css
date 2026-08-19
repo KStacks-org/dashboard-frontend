@@ -12,10 +12,12 @@
  * kstacks-frontend-identity skill's "Dark mode surfaces" guidance.
  */
 :root {
-  /* Sharper than shadcn's 0.625rem default — KStacks' identity is angular
-     (diamond/chevron marks), so cards and controls read closer to the KAUIndex
-     ecosystem's tight corners than a soft "SaaS" radius. */
-  --radius: 0.5rem;
+  /* Square, not shadcn's rounded default — KStacks' identity is angular
+     (diamond/chevron marks), and every box in this app (cards, buttons,
+     inputs, toasts) should read as sharp-cornered, not a soft "SaaS" box.
+     Still a variable, not a literal 0 inlined everywhere, so a future call
+     to soften things back up is a one-line change again. */
+  --radius: 0px;
 
   --background: #0b0b0b;
   --foreground: #ffffff;
@@ -97,10 +99,15 @@
   --color-sidebar-border: var(--sidebar-border);
   --color-sidebar-ring: var(--sidebar-ring);
 
-  --radius-sm: calc(var(--radius) - 4px);
-  --radius-md: calc(var(--radius) - 2px);
-  --radius-lg: var(--radius);
-  --radius-xl: calc(var(--radius) + 4px);
+  /* Sharp, not soft: KStacks' identity is angular (diamond/chevron marks),
+     and every rounded-* card/button/input in this app was still reading as
+     a rounded "SaaS" box even at a reduced base radius. Fixed at 0 rather
+     than derived from --radius, so every size lands flush-square instead of
+     a small-but-still-visible curve. */
+  --radius-sm: 0px;
+  --radius-md: 0px;
+  --radius-lg: 0px;
+  --radius-xl: 0px;
 
   --font-sans: var(--font-sans);
 }

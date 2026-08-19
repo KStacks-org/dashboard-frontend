@@ -170,7 +170,7 @@ function ServiceDetailPage() {
                         <span
                           key={user.id}
                           dir="auto"
-                          className="rounded-full bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
+                          className="rounded-md bg-primary/10 px-2 py-0.5 text-xs font-medium text-primary"
                         >
                           {user.displayName}
                         </span>

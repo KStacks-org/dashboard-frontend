@@ -217,7 +217,7 @@ export function TaskCard({
               {task.assignees.map(({ user }) => (
                 <span
                   key={user.id}
-                  className="flex items-center gap-1 rounded-full bg-primary/10 py-0.5 ps-0.5 pe-2 text-xs font-medium text-primary"
+                  className="flex items-center gap-1 rounded-md bg-primary/10 py-0.5 ps-0.5 pe-2 text-xs font-medium text-primary"
                 >
                   <UserAvatar className="size-4" isCreator={user.id === task.createdById} />
                   <span dir="auto">{user.displayName}</span>

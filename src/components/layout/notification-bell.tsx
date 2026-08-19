@@ -63,7 +63,7 @@ export function NotificationBell() {
           {unread > 0 && (
             <span
               dir="ltr"
-              className="absolute -top-0.5 end-0 flex h-4 min-w-4 items-center justify-center rounded-full bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
+              className="absolute -top-0.5 end-0 flex h-4 min-w-4 items-center justify-center rounded-md bg-primary px-1 text-[10px] font-semibold text-primary-foreground"
             >
               {unread > 9 ? "9+" : unread}
             </span>
@@ -106,7 +106,7 @@ export function NotificationBell() {
                       notification.isRead ? "" : "bg-primary/5"
                     }`}
                   >
-                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-full bg-primary/15 text-primary">
+                    <span className="mt-0.5 flex size-6 shrink-0 items-center justify-center rounded-md bg-primary/15 text-primary">
                       <Icon className="size-3" aria-hidden="true" />
                     </span>
 

@@ -20,6 +20,7 @@ import { Route as AppIssuesRouteImport } from './routes/_app.issues'
 import { Route as AppMilestonesRouteImport } from './routes/_app.milestones'
 import { Route as AppOverviewRouteImport } from './routes/_app.overview'
 import { Route as AppProjectsRouteImport } from './routes/_app.projects'
+import { Route as AppSupportRouteImport } from './routes/_app.support'
 import { Route as AppTasksRouteImport } from './routes/_app.tasks'
 import { Route as AppTeamRouteImport } from './routes/_app.team'
 import { Route as AppServicesIndexRouteImport } from './routes/_app.services.index'
@@ -79,6 +80,11 @@ const AppProjectsRoute = AppProjectsRouteImport.update({
   path: '/projects',
   getParentRoute: () => AppRoute,
 } as any)
+const AppSupportRoute = AppSupportRouteImport.update({
+  id: '/support',
+  path: '/support',
+  getParentRoute: () => AppRoute,
+} as any)
 const AppTasksRoute = AppTasksRouteImport.update({
   id: '/tasks',
   path: '/tasks',
@@ -111,6 +117,7 @@ export interface FileRoutesByFullPath {
   '/milestones': typeof AppMilestonesRoute
   '/overview': typeof AppOverviewRoute
   '/projects': typeof AppProjectsRoute
+  '/support': typeof AppSupportRoute
   '/tasks': typeof AppTasksRoute
   '/team': typeof AppTeamRoute
   '/services/$codename': typeof AppServicesCodenameRoute
@@ -127,6 +134,7 @@ export interface FileRoutesByTo {
   '/milestones': typeof AppMilestonesRoute
   '/overview': typeof AppOverviewRoute
   '/projects': typeof AppProjectsRoute
+  '/support': typeof AppSupportRoute
   '/tasks': typeof AppTasksRoute
   '/team': typeof AppTeamRoute
   '/services/$codename': typeof AppServicesCodenameRoute
@@ -145,6 +153,7 @@ export interface FileRoutesById {
   '/_app/milestones': typeof AppMilestonesRoute
   '/_app/overview': typeof AppOverviewRoute
   '/_app/projects': typeof AppProjectsRoute
+  '/_app/support': typeof AppSupportRoute
   '/_app/tasks': typeof AppTasksRoute
   '/_app/team': typeof AppTeamRoute
   '/_app/services/$codename': typeof AppServicesCodenameRoute
@@ -163,6 +172,7 @@ export interface FileRouteTypes {
     | '/milestones'
     | '/overview'
     | '/projects'
+    | '/support'
     | '/tasks'
     | '/team'
     | '/services/$codename'
@@ -179,6 +189,7 @@ export interface FileRouteTypes {
     | '/milestones'
     | '/overview'
     | '/projects'
+    | '/support'
     | '/tasks'
     | '/team'
     | '/services/$codename'
@@ -196,6 +207,7 @@ export interface FileRouteTypes {
     | '/_app/milestones'
     | '/_app/overview'
     | '/_app/projects'
+    | '/_app/support'
     | '/_app/tasks'
     | '/_app/team'
     | '/_app/services/$codename'
@@ -288,6 +300,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppProjectsRouteImport
       parentRoute: typeof AppRoute
     }
+    '/_app/support': {
+      id: '/_app/support'
+      path: '/support'
+      fullPath: '/support'
+      preLoaderRoute: typeof AppSupportRouteImport
+      parentRoute: typeof AppRoute
+    }
     '/_app/tasks': {
       id: '/_app/tasks'
       path: '/tasks'
@@ -327,6 +346,7 @@ interface AppRouteChildren {
   AppMilestonesRoute: typeof AppMilestonesRoute
   AppOverviewRoute: typeof AppOverviewRoute
   AppProjectsRoute: typeof AppProjectsRoute
+  AppSupportRoute: typeof AppSupportRoute
   AppTasksRoute: typeof AppTasksRoute
   AppTeamRoute: typeof AppTeamRoute
   AppServicesCodenameRoute: typeof AppServicesCodenameRoute
@@ -341,6 +361,7 @@ const AppRouteChildren: AppRouteChildren = {
   AppMilestonesRoute: AppMilestonesRoute,
   AppOverviewRoute: AppOverviewRoute,
   AppProjectsRoute: AppProjectsRoute,
+  AppSupportRoute: AppSupportRoute,
   AppTasksRoute: AppTasksRoute,
   AppTeamRoute: AppTeamRoute,
   AppServicesCodenameRoute: AppServicesCodenameRoute,

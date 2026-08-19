@@ -213,7 +213,7 @@ function BoardCardBody({
             <span
               key={user.id}
               dir="auto"
-              className="rounded-full bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary"
+              className="rounded-md bg-primary/10 px-1.5 py-0.5 text-[10px] font-medium text-primary"
             >
               {user.displayName}
             </span>

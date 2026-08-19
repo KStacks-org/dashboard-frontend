@@ -303,5 +303,21 @@
   "grants_scope_dashboard": "Full authority in this dashboard",
   "grants_scope_service": "Admin of this service, and of its tasks and issues here",
   "grants_super_admin_note": "A super admin already holds every scope, so there is nothing to choose.",
-  "grants_saved": "Scopes updated"
+  "grants_saved": "Scopes updated",
+  "nav_support": "Support",
+  "support_title": "Support",
+  "support_subtitle": "Problem reports sent from the KStack services, in one inbox.",
+  "support_open": "Open",
+  "support_closed": "Closed",
+  "support_status_open": "Open",
+  "support_status_closed": "Closed",
+  "support_empty_open_title": "No open reports",
+  "support_empty_closed_title": "No closed reports",
+  "support_empty_body": "Reports sent from a service's \"Report a problem\" button will show up here.",
+  "support_kstack_team": "KStack Team",
+  "support_reply_placeholder": "Write a reply…",
+  "support_reply_as_org": "Send as KStack",
+  "support_close": "Mark resolved",
+  "support_reopen": "Reopen",
+  "support_send": "Send"
 }
