@@ -9,7 +9,6 @@ export type CurrentUser = {
   displayName: string;
   role: UserRole;
   jobTitle: string | null;
-  mustChangePassword: boolean;
   /** Scopes this account administers. A super admin holds all without listing them. */
   adminScopes: string[];
   createdAt: string;
@@ -166,7 +165,6 @@ export type TeamMemberProfile = {
   jobTitle: string | null;
   responsibilities: string[];
   isActive: boolean;
-  mustChangePassword: boolean;
   createdAt: string;
   workload: {
     activeTasks: number;

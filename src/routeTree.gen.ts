@@ -11,8 +11,7 @@
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AppRouteImport } from './routes/_app'
-import { Route as ChangePasswordRouteImport } from './routes/change-password'
-import { Route as LoginRouteImport } from './routes/login'
+import { Route as NoAccessRouteImport } from './routes/no-access'
 import { Route as AppArchiveRouteImport } from './routes/_app.archive'
 import { Route as AppGithubRouteImport } from './routes/_app.github'
 import { Route as AppHealthRouteImport } from './routes/_app.health'
@@ -35,14 +34,9 @@ const AppRoute = AppRouteImport.update({
   id: '/_app',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ChangePasswordRoute = ChangePasswordRouteImport.update({
-  id: '/change-password',
-  path: '/change-password',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const LoginRoute = LoginRouteImport.update({
-  id: '/login',
-  path: '/login',
+const NoAccessRoute = NoAccessRouteImport.update({
+  id: '/no-access',
+  path: '/no-access',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AppArchiveRoute = AppArchiveRouteImport.update({
@@ -108,8 +102,7 @@ const AppServicesCodenameRoute = AppServicesCodenameRouteImport.update({
 
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
-  '/change-password': typeof ChangePasswordRoute
-  '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
   '/archive': typeof AppArchiveRoute
   '/github': typeof AppGithubRoute
   '/health': typeof AppHealthRoute
@@ -125,8 +118,7 @@ export interface FileRoutesByFullPath {
 }
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
-  '/change-password': typeof ChangePasswordRoute
-  '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
   '/archive': typeof AppArchiveRoute
   '/github': typeof AppGithubRoute
   '/health': typeof AppHealthRoute
@@ -144,8 +136,7 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/_app': typeof AppRouteWithChildren
-  '/change-password': typeof ChangePasswordRoute
-  '/login': typeof LoginRoute
+  '/no-access': typeof NoAccessRoute
   '/_app/archive': typeof AppArchiveRoute
   '/_app/github': typeof AppGithubRoute
   '/_app/health': typeof AppHealthRoute
@@ -163,8 +154,7 @@ export interface FileRouteTypes {
   fileRoutesByFullPath: FileRoutesByFullPath
   fullPaths:
     | '/'
-    | '/change-password'
-    | '/login'
+    | '/no-access'
     | '/archive'
     | '/github'
     | '/health'
@@ -180,8 +170,7 @@ export interface FileRouteTypes {
   fileRoutesByTo: FileRoutesByTo
   to:
     | '/'
-    | '/change-password'
-    | '/login'
+    | '/no-access'
     | '/archive'
     | '/github'
     | '/health'
@@ -198,8 +187,7 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/_app'
-    | '/change-password'
-    | '/login'
+    | '/no-access'
     | '/_app/archive'
     | '/_app/github'
     | '/_app/health'
@@ -217,8 +205,7 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AppRoute: typeof AppRouteWithChildren
-  ChangePasswordRoute: typeof ChangePasswordRoute
-  LoginRoute: typeof LoginRoute
+  NoAccessRoute: typeof NoAccessRoute
 }
 
 declare module '@tanstack/react-router' {
@@ -237,18 +224,11 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AppRouteImport
       parentRoute: typeof rootRouteImport
     }
-    '/change-password': {
-      id: '/change-password'
-      path: '/change-password'
-      fullPath: '/change-password'
-      preLoaderRoute: typeof ChangePasswordRouteImport
-      parentRoute: typeof rootRouteImport
-    }
-    '/login': {
-      id: '/login'
-      path: '/login'
-      fullPath: '/login'
-      preLoaderRoute: typeof LoginRouteImport
+    '/no-access': {
+      id: '/no-access'
+      path: '/no-access'
+      fullPath: '/no-access'
+      preLoaderRoute: typeof NoAccessRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/_app/archive': {
@@ -373,8 +353,7 @@ const AppRouteWithChildren = AppRoute._addFileChildren(AppRouteChildren)
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AppRoute: AppRouteWithChildren,
-  ChangePasswordRoute: ChangePasswordRoute,
-  LoginRoute: LoginRoute,
+  NoAccessRoute: NoAccessRoute,
 }
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
