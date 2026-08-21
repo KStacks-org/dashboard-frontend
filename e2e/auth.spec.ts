@@ -1,75 +1,45 @@
+import { randomUUID } from "node:crypto";
 import { expect, test } from "@playwright/test";
-import { E2E_PASSWORD, E2E_USERS, login } from "./helpers";
+import { E2E_USERS, signInAs } from "./helpers";
 
 test.describe("authentication", () => {
-  test("redirects an unauthenticated visitor to the login page", async ({ page }) => {
+  test("sends an unauthenticated visitor toward auth-service's login", async ({ page }) => {
     await page.goto("/tasks");
-    await expect(page).toHaveURL(/\/login/);
-    await expect(page.getByRole("heading", { name: "Welcome back" })).toBeVisible();
+    await page.waitForURL(/__e2e_login_redirect__/);
   });
 
-  test("shows an inline error for a wrong password and stays on /login", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.email, "totally-wrong");
-    await expect(page.getByRole("alert")).toHaveText("Invalid email or password");
-    await expect(page).toHaveURL(/\/login/);
+  test("shows the no-access page for a real identity that is not on the roster", async ({
+    page,
+  }) => {
+    await signInAs(page, {
+      id: randomUUID(),
+      email: "not.on.the.team@stu.kau.edu.sa",
+      displayName: "Not On The Team",
+    });
+    await page.goto("/tasks");
+    await expect(page).toHaveURL(/\/no-access/);
+    await expect(page.getByRole("heading", { name: "No access yet" })).toBeVisible();
   });
 
-  test("refuses an email outside the university domain", async ({ page }) => {
-    await login(page, "someone@gmail.com");
-    await expect(page.getByRole("alert")).toContainText("@stu.kau.edu.sa");
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  test("tells an unrostered university email it is not authorised", async ({ page }) => {
-    await login(page, "not.on.the.team@stu.kau.edu.sa");
-    await expect(page.getByRole("alert")).toContainText("not authorised");
-    await expect(page).toHaveURL(/\/login/);
-  });
-
-  test("signs in an activated account and lands on the dashboard", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.email);
+  test("signs a rostered account straight in — no login form involved", async ({ page }) => {
+    await signInAs(page, E2E_USERS.rotated);
+    await page.goto("/overview");
     await expect(page).toHaveURL(/\/overview/);
     await expect(page.getByRole("heading", { name: "Overview", exact: true })).toBeVisible();
     await expect(page.getByText(E2E_USERS.rotated.displayName)).toBeVisible();
   });
 
-  test("forces a temporary-password account through the change screen and blocks bypass", async ({
+  test("logging out clears the identity, so the next visit is sent to login again", async ({
     page,
   }) => {
-    await login(page, E2E_USERS.fresh.email);
-    await expect(page).toHaveURL(/\/change-password/);
-
-    // Trying to jump straight to the dashboard bounces back.
-    await page.goto("/tasks");
-    await expect(page).toHaveURL(/\/change-password/);
-
-    const newPassword = "StackedUp2026";
-    await page.getByLabel("Current password").fill(E2E_PASSWORD);
-    await page.getByLabel("New password", { exact: true }).fill(newPassword);
-    await page.getByLabel("Confirm new password").fill(newPassword);
-    await page.getByRole("button", { name: "Update password" }).click();
-
-    await expect(page).toHaveURL(/\/overview/);
-
-    // Log out, then confirm the old temporary password is dead and the new one works.
-    await page.getByRole("button", { name: "Log out" }).click();
-    await expect(page).toHaveURL(/\/login/);
-
-    await login(page, E2E_USERS.fresh.email, E2E_PASSWORD);
-    await expect(page.getByRole("alert")).toHaveText("Invalid email or password");
-
-    await login(page, E2E_USERS.fresh.email, newPassword);
-    await expect(page).toHaveURL(/\/overview/);
-  });
-
-  test("logging out invalidates the session", async ({ page }) => {
-    await login(page, E2E_USERS.rotated.email);
+    await signInAs(page, E2E_USERS.rotated);
+    await page.goto("/overview");
     await expect(page).toHaveURL(/\/overview/);
 
     await page.getByRole("button", { name: "Log out" }).click();
-    await expect(page).toHaveURL(/\/login/);
+    await page.waitForURL(/__e2e_login_redirect__/);
 
     await page.goto("/tasks");
-    await expect(page).toHaveURL(/\/login/);
+    await page.waitForURL(/__e2e_login_redirect__/);
   });
 });

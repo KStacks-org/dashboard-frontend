@@ -1,26 +1,43 @@
-import type { Page } from "@playwright/test";
+import { readFileSync } from "node:fs";
+import path from "node:path";
+import type { BrowserContext, Page } from "@playwright/test";
+import { type E2EUser, signE2EAccessToken } from "./testAuth.js";
+
+const BASE_URL = process.env.E2E_BASE_URL ?? "http://localhost:5173";
+
+/** Written by global-setup once the fixtures exist, with their real (DB-generated) ids. */
+const usersFile = path.resolve(import.meta.dirname, ".e2e-users.json");
+const fixtureUsers: E2EUser[] = JSON.parse(readFileSync(usersFile, "utf8")).users;
+
+function fixture(username: `e2e.${string}`): E2EUser {
+  const email = `${username}@stu.kau.edu.sa`;
+  const user = fixtureUsers.find((u) => u.email === email);
+  if (!user) throw new Error(`No E2E fixture for ${email} — did global setup run?`);
+  return user;
+}
 
 /** Accounts provisioned by backend/scripts/e2e-fixtures.ts (global setup). */
-export const E2E_PASSWORD = "123456";
-
 export const E2E_USERS = {
-  /** Password already rotated — lands straight on the dashboard. */
-  rotated: { email: "e2e.rotated@stu.kau.edu.sa", displayName: "اختبار مُفعَّل" },
-  /** Still on the temporary password — must be forced through the change screen. */
-  fresh: { email: "e2e.fresh@stu.kau.edu.sa", displayName: "اختبار جديد" },
-  /** A second signed-in user, for creator-only permission checks. */
-  other: { email: "e2e.other@stu.kau.edu.sa", displayName: "اختبار آخر" },
+  rotated: fixture("e2e.rotated"),
+  fresh: fixture("e2e.fresh"),
+  other: fixture("e2e.other"),
 } as const;
 
-export async function login(page: Page, email: string, password = E2E_PASSWORD) {
-  await page.goto("/login");
-  await page.getByLabel("University email").fill(email);
-  await page.getByLabel("Password", { exact: true }).fill(password);
-  await page.getByRole("button", { name: "Log in" }).click();
+/**
+ * Signs the browser in as `user` without going near auth-service or a login
+ * form: signs a test-key token for them and hands it to the browser as the
+ * same cookie auth-service would have set. Accepts a Page or a BrowserContext
+ * so a second, separately-signed-in actor in their own context works too.
+ */
+export async function signInAs(pageOrContext: Page | BrowserContext, user: E2EUser) {
+  const context = "context" in pageOrContext ? pageOrContext.context() : pageOrContext;
+  const token = await signE2EAccessToken(user);
+  await context.addCookies([{ name: "access_token", value: token, url: BASE_URL }]);
 }
 
 export async function loginAsRotatedUser(page: Page) {
-  await login(page, E2E_USERS.rotated.email);
+  await signInAs(page, E2E_USERS.rotated);
+  await page.goto("/overview");
   await page.waitForURL("**/overview");
 }
 

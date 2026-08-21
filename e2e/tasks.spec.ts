@@ -1,5 +1,5 @@
 import { expect, test } from "@playwright/test";
-import { E2E_USERS, escapeForRegex, gotoSection, loginAndOpenTasks } from "./helpers";
+import { E2E_USERS, escapeForRegex, gotoSection, loginAndOpenTasks, signInAs } from "./helpers";
 
 /** Deterministic deadline inside the current month, so the calendar assertion is stable. */
 function deadlineThisMonth() {
@@ -187,15 +187,12 @@ test.describe("task management", () => {
     const title = `مهمة شخص آخر ${Date.now()}`;
     await createSimpleTask(page, title);
 
-    // Second user, separate browser context (separate session cookie).
+    // Second user, separate browser context (separate identity cookie).
     const otherContext = await browser.newContext();
+    await signInAs(otherContext, E2E_USERS.other);
     const otherPage = await otherContext.newPage();
-    await otherPage.goto("/login");
-    await otherPage.getByLabel("University email").fill(E2E_USERS.other.email);
-    await otherPage.getByLabel("Password", { exact: true }).fill("123456");
-    await otherPage.getByRole("button", { name: "Log in" }).click();
-    await otherPage.waitForURL("**/overview");
     await otherPage.goto("/tasks");
+    await otherPage.waitForURL("**/tasks");
 
     const card = otherPage.locator("article", { hasText: title });
     await expect(card).toBeVisible();

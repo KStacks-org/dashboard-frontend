@@ -1,4 +1,6 @@
 import { defineConfig, devices } from "@playwright/test";
+import { JWKS_URL } from "./e2e/jwksServer.ts";
+import { TEST_ISSUER } from "./e2e/testAuthKey.ts";
 
 const FRONTEND_URL = process.env.E2E_BASE_URL ?? "http://localhost:5173";
 
@@ -19,14 +21,29 @@ export default defineConfig({
     screenshot: "only-on-failure",
   },
   projects: [{ name: "chromium", use: { ...devices["Desktop Chrome"] } }],
-  // Assumes `pnpm dev` (backend + frontend) is already running, or starts the
-  // frontend itself. The backend must be reachable for these tests to pass.
+  // Runs `pnpm dev` (backend + frontend together) from the repo root — cwd
+  // must be set explicitly because it otherwise defaults to this config
+  // file's own directory, where `pnpm dev` silently resolves to *frontend's*
+  // own "dev" script (frontend-only, no backend) instead of the root one.
+  // reuseExistingServer means an already-running `pnpm dev` is left alone —
+  // note that instance keeps whichever auth-service config it already booted
+  // with, so sign-in via helpers.ts's signInAs will not authenticate against
+  // it unless it was itself started with the same AUTH_SERVICE_JWKS_URL.
   webServer: process.env.E2E_NO_SERVER
     ? undefined
     : {
         command: "pnpm dev",
+        cwd: "..",
         url: FRONTEND_URL,
         reuseExistingServer: true,
         timeout: 60_000,
+        env: {
+          AUTH_SERVICE_JWKS_URL: JWKS_URL,
+          AUTH_SERVICE_JWT_ISSUER: TEST_ISSUER,
+          // A same-origin stub path rather than the real auth-service login —
+          // specs just assert the browser was sent here, without an actual
+          // navigation to the open internet.
+          VITE_AUTH_SERVICE_LOGIN_URL: `${FRONTEND_URL}/__e2e_login_redirect__`,
+        },
       },
 });
