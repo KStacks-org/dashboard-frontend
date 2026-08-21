@@ -45,6 +45,9 @@ ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
 RUN if [ -z "$VITE_AUTH_SERVICE_LOGIN_URL" ]; then unset VITE_AUTH_SERVICE_LOGIN_URL; fi; pnpm build
 
 # ---------- Stage 2: runtime ----------
+# Nothing of the build survives into this stage except dist/ — no sources, no
+# node_modules, no lockfile, and no .env (which .dockerignore keeps out of the
+# context entirely, so a developer's local values can never reach a build).
 FROM node:24-alpine AS runner
 
 # Non-root, with the uid/gid every other KStacks service image uses.
@@ -52,16 +55,24 @@ RUN addgroup -g 1001 -S appgroup && adduser -u 1001 -S appuser -G appgroup
 
 WORKDIR /app
 
-ENV NODE_ENV=production
+ENV NODE_ENV=production \
+    PORT=3000
 
 # Installed as root, before the USER switch, so it lands in the global prefix.
-RUN npm install -g serve
+# Pinned because this is the only thing the runtime stage installs and an
+# unpinned `latest` makes an otherwise reproducible image drift between builds.
+RUN npm install -g serve@14.2.6 && npm cache clean --force
 
 COPY --from=builder --chown=appuser:appgroup /app/dist ./dist
 
 USER appuser
 
 EXPOSE 3000
+
+# Static files only — there is no backend call here, so this reports on the
+# file server itself and never fails because the API is down.
+HEALTHCHECK --interval=30s --timeout=3s --start-period=10s --retries=3 \
+    CMD wget --no-verbose --tries=1 --spider http://localhost:3000/ || exit 1
 
 # -s (--single) is required, not cosmetic: this is a client-side router, so
 # every deep link like /tasks must be answered with index.html and resolved in
