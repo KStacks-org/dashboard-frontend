@@ -1,0 +1,35 @@
+node_modules
+**/node_modules
+dist
+.git
+.github
+.gitignore
+.env
+.env.*
+!.env.example
+*.local
+*.log
+*.tsbuildinfo
+
+# Generated at build time inside the image (`pnpm i18n:compile`)
+src/paraglide
+
+# TanStack Router plugin scratch dir
+.tanstack
+
+# Test and tooling output — the e2e suite cannot run in the image at all
+# (see README / playwright.config.ts: it needs a backend and a mock JWKS).
+e2e
+playwright.config.ts
+playwright-report
+test-results
+blob-report
+coverage
+vitest.config.ts
+biome.json
+
+# Editor / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db

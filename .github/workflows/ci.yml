@@ -1,0 +1,46 @@
+name: CI
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  quality:
+    name: Lint, typecheck and test
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      - name: Lint
+        run: pnpm lint
+
+      # Also compiles the paraglide messages into src/paraglide, which the
+      # app's own sources import — so this has to precede the test run.
+      - name: Typecheck
+        run: pnpm typecheck
+
+      # Unit tests only (vitest). The Playwright suite in e2e/ is deliberately
+      # not wired in: it needs a running dashboard backend and a mock JWKS
+      # server that no longer live in this repo. See README.
+      - name: Test
+        run: pnpm test

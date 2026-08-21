@@ -1,0 +1,119 @@
+name: Build and Push to GHCR
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+env:
+  REGISTRY: ghcr.io
+  IMAGE_NAME: ${{ github.repository }}
+
+jobs:
+  build-and-push:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Set up pnpm
+        uses: pnpm/action-setup@v4
+        with:
+          version: 10.30.3
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: pnpm
+
+      - name: Install dependencies
+        run: pnpm install --frozen-lockfile
+
+      # A pull request builds without pushing, so a broken Dockerfile fails
+      # review rather than the deploy — and needs no registry credentials.
+      - name: Log in to the Container registry
+        if: github.event_name == 'push'
+        uses: docker/login-action@v3
+        with:
+          registry: ${{ env.REGISTRY }}
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Extract Docker metadata
+        id: meta
+        uses: docker/metadata-action@v5
+        with:
+          images: ${{ env.REGISTRY }}/${{ env.IMAGE_NAME }}
+          tags: |
+            type=sha,prefix=main-,format=short,enable={{is_default_branch}}
+            type=sha,prefix=pr-,format=short,enable=${{ github.event_name == 'pull_request' }}
+
+      - name: Set up Docker Buildx
+        uses: docker/setup-buildx-action@v3
+
+      - name: Build and push Docker image
+        id: push
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: ${{ github.event_name == 'push' }}
+          tags: ${{ steps.meta.outputs.tags }}
+          labels: ${{ steps.meta.outputs.labels }}
+          # Vite inlines these at build time, so they are build args and not
+          # container env. Leave both repository variables unset for the
+          # normal reverse-proxied deployment: empty means the app calls /api
+          # on its own origin and falls back to the production auth-service
+          # login URL. Set them only for a split-origin deployment.
+          build-args: |
+            VITE_API_BASE_URL=${{ vars.VITE_API_BASE_URL }}
+            VITE_AUTH_SERVICE_LOGIN_URL=${{ vars.VITE_AUTH_SERVICE_LOGIN_URL }}
+          cache-from: type=gha
+          cache-to: type=gha,mode=max
+          platforms: linux/amd64
+
+  update-infra:
+    name: Update image tag in infra repo
+    needs: build-and-push
+    # Only on a direct push to main — never for a pull request.
+    if: github.event_name == 'push' && github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+
+    steps:
+      - name: Checkout infra repository
+        uses: actions/checkout@v4
+        with:
+          repository: KStacks-org/infra
+          token: ${{ secrets.INFRA_PAT }}
+          path: infra
+
+      - name: Update dashboard-frontend image tag
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          NEW_IMAGE="ghcr.io/kstacks-org/dashboard-frontend:main-${SHORT_SHA}"
+          FILE="infra/dashboard-frontend/deployment.yaml"
+
+          yq -i ".spec.template.spec.containers[0].image = \"${NEW_IMAGE}\"" "$FILE"
+
+          echo "Updated image to: ${NEW_IMAGE}"
+          yq '.spec.template.spec.containers[0].image' "$FILE"
+
+      - name: Commit and push changes
+        run: |
+          SHORT_SHA="${GITHUB_SHA::7}"
+          cd infra
+          git config user.name  "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add dashboard-frontend/deployment.yaml
+          git diff --cached --quiet && echo "No changes to commit" && exit 0
+          git commit -m "chore(dashboard-frontend): bump image to main-${SHORT_SHA}"
+          git push

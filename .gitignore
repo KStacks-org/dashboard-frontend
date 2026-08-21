@@ -1,0 +1,28 @@
+node_modules
+dist
+*.local
+*.log
+*.tsbuildinfo
+
+# Generated at build time by `pnpm i18n:compile` (paraglide) — never committed.
+src/paraglide
+
+# TanStack Router plugin scratch dir
+.tanstack
+
+# Local env; .env.example is the committed template
+.env
+.env.*
+!.env.example
+
+# Playwright output
+playwright-report
+test-results
+blob-report
+e2e/.e2e-users.json
+
+# Editor / OS
+.vscode
+.idea
+.DS_Store
+Thumbs.db

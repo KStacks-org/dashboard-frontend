@@ -1,7 +1,11 @@
 {
-  "name": "frontend",
+  "name": "kstacks-dashboard-frontend",
   "private": true,
   "type": "module",
+  "packageManager": "pnpm@10.30.3",
+  "engines": {
+    "node": ">=24"
+  },
   "scripts": {
     "dev": "vite --port 5173",
     "build": "pnpm i18n:compile && tsc -b && vite build",
