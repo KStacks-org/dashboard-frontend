@@ -114,7 +114,12 @@ function TeamPage() {
         </div>
       )}
 
-      <MemberFormDialog open={formOpen} onOpenChange={setFormOpen} member={editing} />
+      <MemberFormDialog
+        open={formOpen}
+        onOpenChange={setFormOpen}
+        member={editing}
+        canSetRole={isSuperAdmin}
+      />
       <GrantsDialog open={grantsOpen} onOpenChange={setGrantsOpen} member={grantee} />
     </div>
   );

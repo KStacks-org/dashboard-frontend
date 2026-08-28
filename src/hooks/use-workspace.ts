@@ -15,7 +15,11 @@ export type MemberValues = {
   email: string;
   displayName: string;
   jobTitle: string | null;
-  role: UserRole;
+  /**
+   * Omitted unless a super admin is the one editing — nobody else may set it,
+   * and a new member defaults to MEMBER server-side.
+   */
+  role?: UserRole;
   responsibilities: string[];
 };
 

@@ -29,16 +29,19 @@ export function MemberFormDialog({
   open,
   onOpenChange,
   member,
+  canSetRole,
 }: {
   open: boolean;
   onOpenChange: (open: boolean) => void;
   member?: TeamMemberProfile;
+  /** Only a super admin appoints another one; for everyone else the field isn't there. */
+  canSetRole: boolean;
 }) {
   return (
     <Dialog open={open} onOpenChange={onOpenChange}>
       <DialogContent className="max-h-[calc(100dvh-2rem)] gap-0 overflow-y-auto sm:max-w-lg">
         {/* Remounted on every open, so the form always reflects the chosen member. */}
-        <MemberFormBody member={member} onOpenChange={onOpenChange} />
+        <MemberFormBody member={member} onOpenChange={onOpenChange} canSetRole={canSetRole} />
       </DialogContent>
     </Dialog>
   );
@@ -47,9 +50,11 @@ export function MemberFormDialog({
 function MemberFormBody({
   member,
   onOpenChange,
+  canSetRole,
 }: {
   member?: TeamMemberProfile;
   onOpenChange: (open: boolean) => void;
+  canSetRole: boolean;
 }) {
   const isEdit = Boolean(member);
   const createMember = useCreateMember();
@@ -89,6 +94,11 @@ function MemberFormBody({
       .map((line) => line.trim())
       .filter(Boolean);
 
+    // Left out entirely rather than sent unchanged when this admin can't set
+    // it: the server refuses a role it didn't expect, and echoing the current
+    // value back would only work by accident.
+    const role = canSetRole ? { role: form.role } : {};
+
     const result = member
       ? await updateMember
           .mutateAsync({
@@ -96,7 +106,7 @@ function MemberFormBody({
             values: {
               displayName: form.displayName.trim(),
               jobTitle: form.jobTitle.trim() || null,
-              role: form.role,
+              ...role,
               responsibilities,
             },
           })
@@ -106,7 +116,7 @@ function MemberFormBody({
             email: form.email.trim(),
             displayName: form.displayName.trim(),
             jobTitle: form.jobTitle.trim() || null,
-            role: form.role,
+            ...role,
             responsibilities,
           })
           .catch(() => null);
@@ -154,7 +164,7 @@ function MemberFormBody({
           />
         </div>
 
-        <div className="grid gap-4 sm:grid-cols-2">
+        <div className={canSetRole ? "grid gap-4 sm:grid-cols-2" : "space-y-2"}>
           <div className="space-y-2">
             <Label htmlFor={jobId}>{m.team_job_title()}</Label>
             <Input
@@ -166,21 +176,23 @@ function MemberFormBody({
             />
           </div>
 
-          <div className="space-y-2">
-            <Label htmlFor={roleId}>{m.team_role()}</Label>
-            <Select
-              value={form.role}
-              onValueChange={(value) => setForm((f) => ({ ...f, role: value as UserRole }))}
-            >
-              <SelectTrigger id={roleId} className="w-full">
-                <SelectValue />
-              </SelectTrigger>
-              <SelectContent>
-                <SelectItem value="MEMBER">{m.team_role_member()}</SelectItem>
-                <SelectItem value="SUPER_ADMIN">{m.team_role_super_admin()}</SelectItem>
-              </SelectContent>
-            </Select>
-          </div>
+          {canSetRole && (
+            <div className="space-y-2">
+              <Label htmlFor={roleId}>{m.team_role()}</Label>
+              <Select
+                value={form.role}
+                onValueChange={(value) => setForm((f) => ({ ...f, role: value as UserRole }))}
+              >
+                <SelectTrigger id={roleId} className="w-full">
+                  <SelectValue />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="MEMBER">{m.team_role_member()}</SelectItem>
+                  <SelectItem value="SUPER_ADMIN">{m.team_role_super_admin()}</SelectItem>
+                </SelectContent>
+              </Select>
+            </div>
+          )}
         </div>
 
         <div className="space-y-2">
