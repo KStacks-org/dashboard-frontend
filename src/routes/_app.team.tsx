@@ -2,6 +2,7 @@ import { useQuery } from "@tanstack/react-query";
 import { createFileRoute } from "@tanstack/react-router";
 import {
   BugIcon,
+  LayoutDashboardIcon,
   MoreVerticalIcon,
   PencilIcon,
   PlusIcon,
@@ -29,18 +30,25 @@ import {
 } from "@/components/ui/dropdown-menu";
 import { useUpdateMember } from "@/hooks/use-workspace";
 import { ApiError } from "@/lib/api";
+import { serviceAdminScopesForUser } from "@/lib/grant-selection";
 import { adminScopesQuery, teamQuery } from "@/lib/queries";
 import type { TeamMemberProfile } from "@/lib/types";
 import { m } from "@/paraglide/messages";
 
 export const Route = createFileRoute("/_app/team")({
-  loader: ({ context }) => context.queryClient.ensureQueryData(teamQuery),
+  loader: async ({ context }) => {
+    await Promise.all([
+      context.queryClient.ensureQueryData(teamQuery),
+      context.queryClient.ensureQueryData(adminScopesQuery),
+    ]);
+  },
   component: TeamPage,
 });
 
 function TeamPage() {
   const { user } = Route.useRouteContext();
   const { data: members, isPending, isError, refetch } = useQuery(teamQuery);
+  const { data: grantableScopes = [] } = useQuery(adminScopesQuery);
   const updateMember = useUpdateMember();
 
   const [formOpen, setFormOpen] = useState(false);
@@ -48,10 +56,13 @@ function TeamPage() {
   const [grantsOpen, setGrantsOpen] = useState(false);
   const [grantee, setGrantee] = useState<TeamMemberProfile | undefined>();
 
-  // Roster management needs the dashboard scope; changing who holds a scope is
-  // narrower still, and only a super admin can do it.
+  // Dashboard admins edit the roster. Service admins may only add identities
+  // and delegate child roles belonging to services they administer.
   const isSuperAdmin = user.role === "SUPER_ADMIN";
-  const isAdmin = isSuperAdmin || user.adminScopes.includes("dashboard");
+  const isDashboardAdmin = isSuperAdmin || user.adminScopes.includes("dashboard");
+  const managedServiceAdminScopes = serviceAdminScopesForUser(grantableScopes, user.adminScopes);
+  const isServiceAdmin = managedServiceAdminScopes.length > 0;
+  const canCreateMembers = isDashboardAdmin || isServiceAdmin;
 
   const toggleActive = (member: TeamMemberProfile) => {
     updateMember.mutate(
@@ -71,7 +82,7 @@ function TeamPage() {
           <p className="mt-1 text-sm text-muted-foreground">{m.team_subtitle()}</p>
         </div>
 
-        {isAdmin && (
+        {canCreateMembers && (
           <Button
             onClick={() => {
               setEditing(undefined);
@@ -97,8 +108,8 @@ function TeamPage() {
             <MemberCard
               key={member.id}
               member={member}
-              isAdmin={isAdmin}
-              canEditGrants={isSuperAdmin}
+              canEditMember={isDashboardAdmin}
+              canEditGrants={isSuperAdmin || (isServiceAdmin && member.role !== "SUPER_ADMIN")}
               isSelf={member.id === user.id}
               onEditGrants={() => {
                 setGrantee(member);
@@ -120,14 +131,19 @@ function TeamPage() {
         member={editing}
         canSetRole={isSuperAdmin}
       />
-      <GrantsDialog open={grantsOpen} onOpenChange={setGrantsOpen} member={grantee} />
+      <GrantsDialog
+        open={grantsOpen}
+        onOpenChange={setGrantsOpen}
+        member={grantee}
+        managedServiceAdminScopes={isSuperAdmin ? null : managedServiceAdminScopes}
+      />
     </div>
   );
 }
 
 function MemberCard({
   member,
-  isAdmin,
+  canEditMember,
   canEditGrants,
   isSelf,
   onEdit,
@@ -135,7 +151,7 @@ function MemberCard({
   onToggleActive,
 }: {
   member: TeamMemberProfile;
-  isAdmin: boolean;
+  canEditMember: boolean;
   canEditGrants: boolean;
   isSelf: boolean;
   onEdit: () => void;
@@ -145,6 +161,7 @@ function MemberCard({
   const { workload } = member;
   const totalTasks = workload.activeTasks + workload.completedTasks;
   const percent = totalTasks === 0 ? 0 : Math.round((workload.completedTasks / totalTasks) * 100);
+  const hasActions = canEditMember || canEditGrants;
 
   return (
     <article
@@ -175,7 +192,7 @@ function MemberCard({
           </div>
         </div>
 
-        {isAdmin && (
+        {hasActions && (
           <DropdownMenu>
             <DropdownMenuTrigger asChild>
               <Button
@@ -188,10 +205,12 @@ function MemberCard({
               </Button>
             </DropdownMenuTrigger>
             <DropdownMenuContent align="end">
-              <DropdownMenuItem onSelect={onEdit}>
-                <PencilIcon aria-hidden="true" />
-                {m.team_edit()}
-              </DropdownMenuItem>
+              {canEditMember && (
+                <DropdownMenuItem onSelect={onEdit}>
+                  <PencilIcon aria-hidden="true" />
+                  {m.team_edit()}
+                </DropdownMenuItem>
+              )}
               {canEditGrants && (
                 <DropdownMenuItem onSelect={onEditGrants}>
                   <ShieldIcon aria-hidden="true" />
@@ -199,7 +218,7 @@ function MemberCard({
                 </DropdownMenuItem>
               )}
               {/* Deactivating yourself would lock you out mid-session. */}
-              {!isSelf && (
+              {canEditMember && !isSelf && (
                 <DropdownMenuItem
                   variant={member.isActive ? "destructive" : "default"}
                   onSelect={onToggleActive}
@@ -283,9 +302,8 @@ function MemberCard({
  * kgroups" is a different fact from "admin", and the difference matters.
  */
 function RoleBadges({ member }: { member: TeamMemberProfile }) {
-  // Scopes are stored as codenames; people know the services by their names.
   const { data: scopes = [] } = useQuery(adminScopesQuery);
-  const nameOf = (scope: string) => scopes.find((entry) => entry.scope === scope)?.name ?? scope;
+  const detailsOf = (scope: string) => scopes.find((entry) => entry.scope === scope);
 
   if (member.role === "SUPER_ADMIN") {
     return (
@@ -298,6 +316,12 @@ function RoleBadges({ member }: { member: TeamMemberProfile }) {
 
   return (
     <>
+      {member.hasDashboardAccess && (
+        <Badge variant="outline" className="text-muted-foreground">
+          <LayoutDashboardIcon className="size-3" aria-hidden="true" />
+          {m.team_dashboard_access()}
+        </Badge>
+      )}
       {member.adminGrants.map(({ scope }) =>
         scope === "dashboard" ? (
           <Badge
@@ -309,10 +333,17 @@ function RoleBadges({ member }: { member: TeamMemberProfile }) {
             {m.team_role_dashboard_admin()}
           </Badge>
         ) : (
-          <Badge key={scope} variant="outline" className="text-muted-foreground">
-            <ServiceLogo codename={scope} className="size-3.5" />
-            {m.team_role_service_admin({ service: nameOf(scope) })}
-          </Badge>
+          (() => {
+            const details = detailsOf(scope);
+            const codename = details?.serviceCodename ?? scope;
+            const label = details?.scope ?? scope.toLocaleUpperCase();
+            return (
+              <Badge key={scope} variant="outline" className="text-muted-foreground">
+                <ServiceLogo codename={codename} className="size-3.5" />
+                {label}
+              </Badge>
+            );
+          })()
         ),
       )}
     </>

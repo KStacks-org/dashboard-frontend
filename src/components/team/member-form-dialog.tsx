@@ -151,6 +151,9 @@ function MemberFormBody({
             onChange={(e) => setForm((f) => ({ ...f, email: e.target.value }))}
             aria-invalid={emailInvalid || undefined}
           />
+          {!isEdit && (
+            <p className="text-xs text-muted-foreground">{m.team_add_access_hint()}</p>
+          )}
         </div>
 
         <div className="space-y-2">

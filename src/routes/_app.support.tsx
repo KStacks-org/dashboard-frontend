@@ -86,7 +86,10 @@ function ConversationRow({
 }) {
   const { data: scopes = [] } = useQuery(adminScopesQuery);
   const serviceName =
-    scopes.find((scope) => scope.scope === conversation.serviceCodename)?.name ??
+    scopes.find(
+      (scope) =>
+        scope.serviceCodename === conversation.serviceCodename && scope.role === "ADMIN",
+    )?.name ??
     conversation.serviceCodename;
   const lastMessage = conversation.messages.at(-1);
 

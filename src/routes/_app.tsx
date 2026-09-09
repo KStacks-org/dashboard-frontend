@@ -12,10 +12,13 @@ export const Route = createFileRoute("/_app")({
       const user = await context.queryClient.fetchQuery(currentUserQuery);
       return { user };
     } catch (error) {
-      // auth-service knows this person, but they're not on this app's
-      // roster — a real "no" the login redirect can't help with (auth-service
+      // auth-service knows this person, but the dashboard has denied access —
+      // a real "no" the login redirect can't help with (auth-service
       // would just recognise them again and bounce them straight back here).
-      if (error instanceof ApiError && error.code === "EMAIL_NOT_ALLOWED") {
+      if (
+        error instanceof ApiError &&
+        (error.code === "EMAIL_NOT_ALLOWED" || error.code === "DASHBOARD_ACCESS_DENIED")
+      ) {
         throw redirect({ to: "/no-access" });
       }
       // No/expired identity: only a full page load can hand off to Google's

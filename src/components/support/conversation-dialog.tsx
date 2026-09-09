@@ -69,7 +69,10 @@ function ConversationBody({ id }: { id: string }) {
   if (isError || !conversation) return <ErrorState onRetry={() => refetch()} />;
 
   const serviceName =
-    scopes.find((scope) => scope.scope === conversation.serviceCodename)?.name ??
+    scopes.find(
+      (scope) =>
+        scope.serviceCodename === conversation.serviceCodename && scope.role === "ADMIN",
+    )?.name ??
     conversation.serviceCodename;
 
   const handleSend = async () => {

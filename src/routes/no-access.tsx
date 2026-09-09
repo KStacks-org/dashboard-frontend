@@ -22,7 +22,10 @@ function NoAccessPage() {
     // router guard, so there is nothing to gain from routing this through
     // react-query's cache.
     apiRequest("/auth/me").catch((error: unknown) => {
-      if (error instanceof ApiError && error.code === "EMAIL_NOT_ALLOWED") {
+      if (
+        error instanceof ApiError &&
+        (error.code === "EMAIL_NOT_ALLOWED" || error.code === "DASHBOARD_ACCESS_DENIED")
+      ) {
         const email = (error.details as { email?: string } | undefined)?.email;
         if (email) setDeniedEmail(email);
       }

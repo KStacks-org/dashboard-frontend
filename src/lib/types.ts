@@ -9,6 +9,7 @@ export type CurrentUser = {
   displayName: string;
   role: UserRole;
   jobTitle: string | null;
+  hasDashboardAccess: boolean;
   /** Scopes this account administers. A super admin holds all without listing them. */
   adminScopes: string[];
   createdAt: string;
@@ -25,6 +26,8 @@ export type Service = {
   id: string;
   name: string;
   codename: string;
+  /** Stable prefix used by this service's JWT roles, e.g. DEVS. */
+  accessScopeKey: string;
   tagline: string;
   description: string;
   status: ServiceStatus;
@@ -143,8 +146,13 @@ export type UserRole = "SUPER_ADMIN" | "MEMBER";
 
 /** A grantable scope: this app, or one KStack service. */
 export type AdminScope = {
+  /** Null for built-in roles such as ADMIN; populated for custom service roles. */
+  id: string | null;
   scope: string;
   name: string;
+  role: string;
+  serviceId: string | null;
+  serviceCodename: string | null;
   isDashboard: boolean;
 };
 export type IssueStatus = "OPEN" | "IN_PROGRESS" | "RESOLVED" | "CLOSED";
@@ -164,6 +172,8 @@ export type TeamMemberProfile = {
   adminGrants: { scope: string }[];
   jobTitle: string | null;
   responsibilities: string[];
+  /** Explicit workspace membership; an identity may instead be service-only. */
+  hasDashboardAccess: boolean;
   isActive: boolean;
   createdAt: string;
   workload: {
