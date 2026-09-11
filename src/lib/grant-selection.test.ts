@@ -10,7 +10,7 @@ import type { AdminScope } from "./types";
 const scopes: AdminScope[] = [
   {
     id: null,
-    scope: "DEVS-ADMIN",
+    scope: "devs-admin",
     name: "Devs",
     role: "ADMIN",
     serviceId: "devs",
@@ -19,7 +19,7 @@ const scopes: AdminScope[] = [
   },
   {
     id: "mentor",
-    scope: "DEVS-MENTOR",
+    scope: "devs-mentor",
     name: "Devs",
     role: "MENTOR",
     serviceId: "devs",
@@ -33,27 +33,27 @@ describe("service grant selection", () => {
   if (!group) throw new Error("Expected the Devs scope group");
 
   it("groups custom roles under their service admin scope", () => {
-    expect(group.admin.scope).toBe("DEVS-ADMIN");
-    expect(group.roles.map((role) => role.scope)).toEqual(["DEVS-MENTOR"]);
+    expect(group.admin.scope).toBe("devs-admin");
+    expect(group.roles.map((role) => role.scope)).toEqual(["devs-mentor"]);
   });
 
   it("recognises only the built-in service ADMIN scope as delegating authority", () => {
-    expect(serviceAdminScopesForUser(scopes, ["DEVS-ADMIN", "DEVS-MENTOR"])).toEqual([
-      "DEVS-ADMIN",
+    expect(serviceAdminScopesForUser(scopes, ["devs-admin", "devs-mentor"])).toEqual([
+      "devs-admin",
     ]);
-    expect(serviceAdminScopesForUser(scopes, ["DEVS-MENTOR"])).toEqual([]);
+    expect(serviceAdminScopesForUser(scopes, ["devs-mentor"])).toEqual([]);
   });
 
   it("selecting ADMIN replaces narrower roles for only that service", () => {
-    expect(selectServiceAdmin(["DEVS-MENTOR", "OTHER-MENTOR"], group, true)).toEqual([
-      "OTHER-MENTOR",
-      "DEVS-ADMIN",
+    expect(selectServiceAdmin(["devs-mentor", "other-mentor"], group, true)).toEqual([
+      "other-mentor",
+      "devs-admin",
     ]);
   });
 
   it("selecting a narrower role removes ADMIN for only that service", () => {
     expect(
-      selectServiceRole(["DEVS-ADMIN", "OTHER-ADMIN"], "DEVS-ADMIN", "DEVS-MENTOR", true),
-    ).toEqual(["OTHER-ADMIN", "DEVS-MENTOR"]);
+      selectServiceRole(["devs-admin", "other-admin"], "devs-admin", "devs-mentor", true),
+    ).toEqual(["other-admin", "devs-mentor"]);
   });
 });

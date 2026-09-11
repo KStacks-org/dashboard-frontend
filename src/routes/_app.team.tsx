@@ -59,7 +59,7 @@ function TeamPage() {
   // Dashboard admins edit the roster. Service admins may only add identities
   // and delegate child roles belonging to services they administer.
   const isSuperAdmin = user.role === "SUPER_ADMIN";
-  const isDashboardAdmin = isSuperAdmin || user.adminScopes.includes("dashboard");
+  const isDashboardAdmin = isSuperAdmin || user.adminScopes.includes("dashboard-admin");
   const managedServiceAdminScopes = serviceAdminScopesForUser(grantableScopes, user.adminScopes);
   const isServiceAdmin = managedServiceAdminScopes.length > 0;
   const canCreateMembers = isDashboardAdmin || isServiceAdmin;
@@ -323,7 +323,7 @@ function RoleBadges({ member }: { member: TeamMemberProfile }) {
         </Badge>
       )}
       {member.adminGrants.map(({ scope }) =>
-        scope === "dashboard" ? (
+        scope === "dashboard-admin" ? (
           <Badge
             key={scope}
             variant="outline"

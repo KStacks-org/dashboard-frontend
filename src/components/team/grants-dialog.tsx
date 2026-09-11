@@ -104,12 +104,12 @@ function GrantsBody({
           : [...current, scope]
         : current.filter((value) => value !== scope),
     );
-    if (scope === "dashboard" && checked) setHasDashboardAccess(true);
+    if (scope === "dashboard-admin" && checked) setHasDashboardAccess(true);
   };
 
   const toggleDashboardAccess = (checked: boolean) => {
     setHasDashboardAccess(checked);
-    if (!checked) setSelected((current) => current.filter((scope) => scope !== "dashboard"));
+    if (!checked) setSelected((current) => current.filter((scope) => scope !== "dashboard-admin"));
   };
 
   const handleSave = async () => {
@@ -240,7 +240,7 @@ function GrantsBody({
 }
 
 function scopeLabel(scope: AdminScope): string {
-  return scope.isDashboard ? "DASHBOARD-ADMIN" : scope.scope;
+  return scope.scope;
 }
 
 function isCustomServiceRole(
