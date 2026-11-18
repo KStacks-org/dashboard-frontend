@@ -26,3 +26,5 @@ e2e/.e2e-users.json
 .idea
 .DS_Store
 Thumbs.db
+!.env.dev
+!.env.prod

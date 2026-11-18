@@ -1,0 +1,24 @@
+name: Build and publish
+
+on:
+  push:
+    branches: [dev, prod]
+    tags: ['v*']
+  pull_request:
+    branches: [dev, prod]
+  workflow_dispatch:
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.ref }}
+  cancel-in-progress: true
+
+permissions:
+  contents: read
+  packages: write
+
+jobs:
+  container:
+    uses: KStacks-org/.github/.github/workflows/container.yml@1a102e833bd6e3f966b496a95d3aabf4cbaa1f69
+    with:
+      frontend: true
+    secrets: inherit

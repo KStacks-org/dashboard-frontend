@@ -33,3 +33,5 @@ biome.json
 .idea
 .DS_Store
 Thumbs.db
+!.env.dev
+!.env.prod

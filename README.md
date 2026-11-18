@@ -32,33 +32,19 @@ docker build -t dashboard-frontend .
 docker run --rm -p 3000:3000 dashboard-frontend
 ```
 
-### Build arguments
+### Build configuration
 
-Vite inlines `VITE_*` into the client bundle **at build time**, so these are
-build args, not runtime env. Setting them on a running container does nothing —
-the values are already compiled into the shipped JavaScript.
-
-| Build arg | Default | When to set it |
-| --- | --- | --- |
-| `VITE_API_BASE_URL` | *(empty)* | Empty means same-origin `/api`, which is what a reverse-proxied deployment wants. Set only if the frontend and API are on different origins. |
-| `VITE_AUTH_SERVICE_LOGIN_URL` | *(empty → falls back to `https://api.kstacks.org/auth/login`)* | Only to point at a non-production auth-service. |
+Public browser settings are compiled from `.env.dev` or `.env.prod`. Use
+`BUILD_MODE=dev` for the dev image; Docker defaults to `BUILD_MODE=prod`.
+Both files keep API calls on the same origin (`/api`) and select the matching
+auth-service login URL.
 
 ```bash
-# split-origin example
-docker build \
-  --build-arg VITE_API_BASE_URL=https://api.dashboard.example.com \
-  -t dashboard-frontend .
+docker build --build-arg BUILD_MODE=dev -t dashboard-frontend:dev .
 ```
 
-An empty `VITE_AUTH_SERVICE_LOGIN_URL` is deliberately **unset** before
-`vite build` rather than passed through as `""`. `src/lib/authService.ts` uses
-`??`, which falls back on `undefined` but not on an empty string — passing `""`
-would compile the production fallback URL out of the bundle and leave the
-sign-in redirect pointing at nothing.
-
-> `.env` is excluded from the Docker build context on purpose. Vite reads it
-> during `vite build`, so a developer's local values would otherwise override
-> the build args and end up baked into a production image.
+Update the committed environment files when changing public origins. Local
+`.env` and `*.local` files are excluded from Docker builds.
 
 ### What the image gives the deployment
 
@@ -83,10 +69,10 @@ to planner-frontend.)
 | Workflow | Purpose |
 | --- | --- |
 | `.github/workflows/ci.yml` | lint, typecheck, unit tests |
-| `.github/workflows/docker-publish.yml` | builds the image; pushes to GHCR on `main`, build-only on PRs, then bumps the tag in `KStacks-org/infra` |
+| `.github/workflows/publish.yml` | calls the shared org workflow; builds dev/prod variants, publishes on pushes, and only builds on PRs |
 
-Both `VITE_*` build args are sourced from GitHub repository **variables**
-(`vars.*`). Leave them unset for the normal reverse-proxied deployment.
+This app has no Helm registration in the current infra repo, so publishing does
+not automatically deploy it.
 
 ## End-to-end tests
 

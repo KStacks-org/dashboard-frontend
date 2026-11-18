@@ -19,30 +19,8 @@ RUN pnpm install --frozen-lockfile
 
 COPY . .
 
-# Vite bakes VITE_* into the client bundle at build time, so these are build
-# args rather than runtime env — setting them on the container would do
-# nothing, the values are already inlined in the shipped JS.
-#
-# Both default to empty, which is what a reverse-proxied deployment wants:
-# an empty VITE_API_BASE_URL makes the app call /api on its own origin, and
-# an empty login URL falls back to the production auth-service URL hardcoded
-# in src/lib/authService.ts. Set the repository variables only when the
-# frontend and the API are served from different origins.
-ARG VITE_API_BASE_URL=""
-ARG VITE_AUTH_SERVICE_LOGIN_URL=""
-ENV VITE_API_BASE_URL=$VITE_API_BASE_URL \
-    VITE_AUTH_SERVICE_LOGIN_URL=$VITE_AUTH_SERVICE_LOGIN_URL
-
-# paraglide compile -> tsc -b -> vite build. The i18n messages are generated
-# into src/paraglide here rather than copied in, so the image never depends on
-# codegen that only exists on a developer's machine — which is also why
-# .dockerignore excludes that directory.
-# `??` in src/lib/authService.ts falls back only on undefined, not on "" — so
-# an empty VITE_AUTH_SERVICE_LOGIN_URL must reach vite as *unset* rather than
-# as an empty string, or the production fallback URL is compiled away and the
-# sign-in redirect resolves to nowhere. CI always passes the build arg (an
-# unset repository variable expands to empty), so the guard belongs here.
-RUN if [ -z "$VITE_AUTH_SERVICE_LOGIN_URL" ]; then unset VITE_AUTH_SERVICE_LOGIN_URL; fi; pnpm build
+ARG BUILD_MODE=prod
+RUN pnpm build --mode "$BUILD_MODE"
 
 # ---------- Stage 2: runtime ----------
 # Nothing of the build survives into this stage except dist/ — no sources, no
